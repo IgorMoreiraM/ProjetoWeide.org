@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Heróis — Weide.org</title>
+  <meta name="description" content="Conheça os heróis do universo Weide.org — personagens, poderes heroicos e cartas geradas por cada classe." />
+  <link rel="stylesheet" href="css/shared.css" />
+  <link rel="stylesheet" href="css/herois.css" />
+</head>
+<body>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <span class="ticker-label">⚡ URGENTE</span>
+  <span class="ticker-content">
+    BREAKING: Weide José confirma que o Sol nasce no Oeste &nbsp;|&nbsp;
+    EXCLUSIVO: Especialista Latão prova que gelo é quente &nbsp;|&nbsp;
+    POLÊMICA: Brasil fica na Europa, diz fonte confiável &nbsp;|&nbsp;
+    CHOCANTE: Água não molha, apenas umedece levemente &nbsp;|&nbsp;
+    REVELAÇÃO: Peixe não gosta de água, confirma Weide &nbsp;|&nbsp;
+    INÉDITO: A Lua é maior que o Sol, mas parece menor por estar mais perto &nbsp;|&nbsp;
+    BOMBA: Pizza foi inventada em Minas Gerais em 1943 &nbsp;|&nbsp;
+  </span>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-top" style="max-width:1100px;margin:0 auto;">
+    <div>
+      <a href="index.html" class="site-title">WEIDE<span>.ORG</span></a>
+      <div class="site-subtitle">O portal de notícias mais preciso¹ do Brasil — ¹segundo Weide José</div>
+    </div>
+    <div class="badge-credibility">
+      <span class="pct">2%</span>
+      de credibilidade<br>e subindo²<br><small style="font-size:0.6rem;color:#555">²não está subindo</small>
+    </div>
+  </div>
+  <nav style="max-width:1100px;margin:0 auto;">
+    <a href="index.html">Início</a>
+    <a href="index.html">Ciência</a>
+    <a href="index.html">Geografi(a)</a>
+    <a href="index.html">Culinária</a>
+    <a href="index.html">Saúde</a>
+    <a href="index.html">Tecnologia</a>
+    <a href="index.html">História</a>
+    <a href="index.html">Economia</a>
+    <a href="index.html">Opinião de Latão</a>
+    <a href="cartinhas.html">🃏 Cartinhas</a>
+    <a href="herois.html" class="ativo">⚔️ Heróis</a>
+    <a href="ranking-nerd.html">🏆 Ranking Nerd</a>
+  </nav>
+</header>
+
+<!-- HERO BANNER -->
+<div class="hero-herois">
+  <div class="hero-herois-inner">
+    <div>
+      <span class="hero-badge">⚔️ Fichas dos Personagens</span>
+      <h1>HERÓIS: Os Lendários do Grupo</h1>
+      <p>
+        Conheça os heróis do universo Weide.org. Cada personagem pertence a uma classe,
+        possui um poder heroico único e — quando o destino assim determina — gera cartas
+        especiais durante o jogo. Clique em qualquer carta para ver em tamanho completo.
+      </p>
+      <div class="hero-stats" id="heroStats"></div>
+    </div>
+    <div class="hero-herois-icon">
+      ⚔️
+      <p>Fichas<br>Completas</p>
+    </div>
+  </div>
+</div>
+
+<!-- CLASS TABS -->
+<div class="classes-nav">
+  <div class="classes-nav-inner" id="tabsContainer"></div>
+</div>
+
+<!-- CONTENT -->
+<div id="heroisContainer"></div>
+
+<!-- STRIP -->
+<div class="strip">
+  🔴 AO VIVO — Weide José está atualmente tentando se adicionar como 10ª classe: "O Latão é uma classe sim"
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <strong>WEIDE.ORG</strong> — O Portal da Verdade Alternativa™<br>
+  Fundado em 2026 por Weide José (Latão) · Todas as opiniões são fatos · Todos os fatos são opiniões<br>
+  <div class="disclaimer">
+    ⚠️ Este site é uma sátira. Nenhuma informação aqui publicada deve ser levada a sério,
+    assim como nenhuma informação dita por Weide José em qualquer contexto da vida real.
+    Qualquer dano causado pela leitura deste conteúdo é responsabilidade de quem acreditou.
+  </div>
+</footer>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightboxClose">✕</button>
+  <div class="lightbox-img-wrap">
+    <img id="lightboxImg" src="" alt="">
+  </div>
+  <div class="lightbox-name" id="lightboxName"></div>
+</div>
+
+<script src="js/cartinhas-data.js"></script>
+<script>
+
+// ── RENDER HERÓI ──────────────────────────────────────────────────────────────
+
+function renderHeroi(cls) {
+  if (!cls.heroi) return ''; // pula Comuns
+
+  const h = cls.heroi;
+
+  let cartasGeradasHtml = '';
+  if (h.cartasGeradas && h.cartasGeradas.length > 0) {
+    cartasGeradasHtml += `
+      <div class="cartas-geradas-label"><span>🃏 Cartas Geradas pelo Poder — ${h.cartasGeradas.length}</span></div>
+      <div class="cartas-geradas-grid">
+    `;
+    h.cartasGeradas.forEach(c => {
+      const path = c.pasta + c.file;
+      cartasGeradasHtml += `
+        <div class="cartinha" onclick="openLightbox('${escAttr(path)}','${escAttr(c.nome)}')">
+          <div class="cartinha-img-wrap">
+            <img src="${escAttr(path)}" alt="${escAttr(c.nome)}" loading="lazy">
+          </div>
+          <div class="cartinha-nome">${c.nome}</div>
+        </div>
+      `;
+    });
+    cartasGeradasHtml += `</div>`;
+  }
+
+  return `
+    <div class="heroi-section">
+      <div class="heroi-classe-header" style="background:${cls.cor}">
+        <span class="classe-icon-big">${cls.icon}</span>
+        <div>
+          <h2>${cls.nome}</h2>
+          <div class="classe-personagem-label">${cls.personagem}</div>
+        </div>
+      </div>
+
+      <div class="heroi-content">
+        <!-- Coluna esquerda: imagem do personagem -->
+        <div class="heroi-col-personagem">
+          <div class="heroi-img-frame" onclick="openLightbox('${escAttr(h.img)}','${escAttr(cls.personagem)}')">
+            <img src="${escAttr(h.img)}" alt="${escAttr(cls.personagem)}" loading="lazy">
+          </div>
+          <div class="heroi-nome-tag">${cls.personagem}</div>
+        </div>
+
+        <!-- Coluna direita: poder heroico + cartas geradas -->
+        <div class="heroi-col-direita">
+          <div class="poder-heroico-bloco">
+            <div class="poder-label"><span>⚡ Poder Heroico</span></div>
+            <div class="poder-heroico-card" onclick="openLightbox('${escAttr(h.poderImg)}','${escAttr(h.poderNome)}')">
+              <div class="cartinha-img-wrap">
+                <img src="${escAttr(h.poderImg)}" alt="${escAttr(h.poderNome)}" loading="lazy">
+              </div>
+              <div class="cartinha-nome">${h.poderNome}</div>
+            </div>
+          </div>
+          ${cartasGeradasHtml}
+        </div>
+      </div>
+
+      <hr class="heroi-divider">
+    </div>
+  `;
+}
+
+// ── TAB SWITCHING ─────────────────────────────────────────────────────────────
+
+function showClasse(id) {
+  const cls = CLASSES.find(c => c.id === id);
+  if (!cls) return;
+  document.getElementById('heroisContainer').innerHTML = renderHeroi(cls);
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.id === id);
+  });
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+
+initLightbox();
+
+// Build tabs (excluir Comuns que não tem herói)
+const tabsEl = document.getElementById('tabsContainer');
+const heroisClasses = CLASSES.filter(c => c.heroi !== null);
+heroisClasses.forEach(cls => {
+  const btn = document.createElement('button');
+  btn.className = 'tab-btn';
+  btn.dataset.id = cls.id;
+  btn.innerHTML = `${cls.icon} ${cls.nome}`;
+  btn.onclick = () => showClasse(cls.id);
+  tabsEl.appendChild(btn);
+});
+
+// Hero stats
+document.getElementById('heroStats').innerHTML = `
+  <div class="hero-stats">
+    <div class="stat"><span class="num">${heroisClasses.length}</span><span class="lbl">Classes</span></div>
+    <div class="stat"><span class="num">${heroisClasses.reduce((a,c) => a + (c.heroi.cartasGeradas ? c.heroi.cartasGeradas.length : 0), 0)}</span><span class="lbl">Cartas Geradas</span></div>
+    <div class="stat"><span class="num">${CLASSES.reduce((a,c) => a + c.cartas.length + c.novaLeva.length, 0)}</span><span class="lbl">Total de Cartas</span></div>
+  </div>`;
+
+// Show first hero class
+showClasse(heroisClasses[0].id);
+</script>
+</body>
+</html>
