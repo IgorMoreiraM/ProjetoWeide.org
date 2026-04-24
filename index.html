@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weide.org — A Verdade Segundo Latão</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+3:wght@400;600;700&display=swap');
+
+    :root {
+      --vermelho: #c0000a;
+      --amarelo: #f5c400;
+      --preto: #111;
+      --cinza: #f2f2f2;
+      --branco: #fff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Source Sans 3', sans-serif;
+      background: #e8e8e8;
+      color: var(--preto);
+    }
+
+    /* ── TICKER ── */
+    .ticker-wrap {
+      background: var(--vermelho);
+      color: var(--branco);
+      overflow: hidden;
+      white-space: nowrap;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      padding: 6px 0;
+    }
+    .ticker-label {
+      display: inline-block;
+      background: var(--amarelo);
+      color: var(--preto);
+      padding: 0 12px;
+      margin-right: 12px;
+      font-size: 0.75rem;
+    }
+    .ticker-content {
+      display: inline-block;
+      animation: ticker 30s linear infinite;
+    }
+    @keyframes ticker {
+      0%   { transform: translateX(100vw); }
+      100% { transform: translateX(-100%); }
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--preto);
+      padding: 0 20px;
+    }
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 0 10px;
+      border-bottom: 3px solid var(--vermelho);
+    }
+    .site-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      font-weight: 900;
+      color: var(--branco);
+      letter-spacing: -1px;
+      line-height: 1;
+    }
+    .site-title span { color: var(--amarelo); }
+    .site-subtitle {
+      font-size: 0.72rem;
+      color: #aaa;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+    .badge-credibility {
+      background: var(--amarelo);
+      color: var(--preto);
+      font-weight: 700;
+      font-size: 0.72rem;
+      padding: 6px 12px;
+      text-align: center;
+      line-height: 1.4;
+    }
+    .badge-credibility .pct { font-size: 1.8rem; display: block; font-family: 'Playfair Display', serif; }
+
+    nav {
+      display: flex;
+      gap: 0;
+      overflow-x: auto;
+      padding: 0;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    nav::-webkit-scrollbar { display: none; }
+    nav a {
+      color: #ccc;
+      text-decoration: none;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 10px 16px;
+      display: block;
+      transition: background 0.15s, color 0.15s;
+      white-space: nowrap;
+    }
+    nav a:hover { background: var(--vermelho); color: #fff; }
+
+    /* ── HERO BANNER ── */
+    .hero {
+      background: var(--preto);
+      color: #fff;
+      padding: 30px 20px;
+      border-bottom: 6px solid var(--amarelo);
+    }
+    .hero-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      align-items: center;
+    }
+    @media (max-width: 720px) { .hero-inner { grid-template-columns: 1fr; } }
+    .hero-badge {
+      background: var(--vermelho);
+      color: #fff;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      display: inline-block;
+      padding: 4px 10px;
+      margin-bottom: 10px;
+    }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.6rem, 4vw, 2.6rem);
+      line-height: 1.15;
+      margin-bottom: 12px;
+    }
+    .hero p {
+      font-size: 0.95rem;
+      color: #bbb;
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+    .hero-meta {
+      font-size: 0.72rem;
+      color: #888;
+    }
+    .hero-meta strong { color: var(--amarelo); }
+    .hero-img-box {
+      background: #1a1a1a;
+      border: 3px solid var(--vermelho);
+      padding: 20px;
+      text-align: center;
+    }
+    .latao-icon {
+      font-size: 6rem;
+      line-height: 1;
+      display: block;
+      filter: grayscale(0.3);
+    }
+    .hero-img-box p {
+      font-size: 0.7rem;
+      color: #666;
+      margin-top: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* ── MAIN LAYOUT ── */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 30px 20px;
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 30px;
+    }
+    @media (max-width: 860px) { .container { grid-template-columns: 1fr; } }
+
+    /* ── SECTION TITLE ── */
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      border-bottom: 3px solid var(--preto);
+      padding-bottom: 6px;
+      margin-bottom: 20px;
+    }
+    .section-title span {
+      background: var(--preto);
+      color: #fff;
+      padding: 2px 8px;
+    }
+
+    /* ── NEWS GRID ── */
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    @media (max-width: 540px) { .news-grid { grid-template-columns: 1fr; } }
+
+    .card {
+      background: var(--branco);
+      border: 1px solid #ddd;
+      overflow: hidden;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.12); }
+    .card-img {
+      background: var(--cinza);
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3.5rem;
+      border-bottom: 3px solid var(--vermelho);
+      position: relative;
+    }
+    .card-stamp {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: var(--vermelho);
+      color: #fff;
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 3px 7px;
+    }
+    .card-stamp.yellow { background: var(--amarelo); color: var(--preto); }
+    .card-body { padding: 14px; }
+    .card-body h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      line-height: 1.3;
+      margin-bottom: 8px;
+    }
+    .card-body p {
+      font-size: 0.82rem;
+      color: #555;
+      line-height: 1.5;
+      margin-bottom: 10px;
+    }
+    .card-footer {
+      font-size: 0.68rem;
+      color: #999;
+      display: flex;
+      justify-content: space-between;
+      border-top: 1px solid #eee;
+      padding-top: 8px;
+    }
+    .card-footer .author { color: var(--vermelho); font-weight: 700; }
+
+    /* ── SIDEBAR ── */
+    .sidebar { display: flex; flex-direction: column; gap: 24px; }
+
+    .author-box {
+      background: var(--preto);
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+    }
+    .author-box .avatar { font-size: 4rem; display: block; margin-bottom: 10px; }
+    .author-box h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      color: var(--amarelo);
+      margin-bottom: 4px;
+    }
+    .author-box .cargo {
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #888;
+      margin-bottom: 12px;
+    }
+    .author-box p {
+      font-size: 0.8rem;
+      color: #bbb;
+      line-height: 1.55;
+      text-align: left;
+    }
+    .stats-row {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid #333;
+    }
+    .stat { text-align: center; }
+    .stat .num { font-size: 1.3rem; font-weight: 700; color: var(--amarelo); font-family: 'Playfair Display', serif; }
+    .stat .lbl { font-size: 0.6rem; color: #888; text-transform: uppercase; letter-spacing: 0.08em; }
+
+    .verdadometro {
+      background: var(--branco);
+      border: 1px solid #ddd;
+      padding: 16px;
+    }
+    .verdadometro h4 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+    .meter-bar {
+      height: 22px;
+      background: #eee;
+      border-radius: 2px;
+      overflow: hidden;
+      margin-bottom: 6px;
+    }
+    .meter-fill {
+      height: 100%;
+      background: var(--vermelho);
+      width: 2%;
+      position: relative;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+    .meter-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.65rem;
+      color: #999;
+    }
+    .meter-result {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 0.75rem;
+      color: var(--vermelho);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .ranking-box {
+      background: var(--branco);
+      border: 1px solid #ddd;
+      padding: 16px;
+    }
+    .ranking-box h4 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      margin-bottom: 12px;
+    }
+    .ranking-item {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 8px 0;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 0.8rem;
+    }
+    .ranking-item:last-child { border-bottom: none; }
+    .rank-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: #ddd;
+      line-height: 1;
+      flex-shrink: 0;
+      width: 24px;
+    }
+    .rank-num.top { color: var(--vermelho); }
+    .ranking-item p { color: #444; line-height: 1.4; }
+
+    .aviso-box {
+      background: var(--amarelo);
+      padding: 16px;
+      font-size: 0.78rem;
+      line-height: 1.55;
+      font-weight: 600;
+    }
+    .aviso-box strong { display: block; font-size: 0.9rem; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+    /* ── FULL-WIDTH STRIP ── */
+    .strip {
+      background: var(--vermelho);
+      color: #fff;
+      padding: 14px 20px;
+      text-align: center;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── CITAÇÕES ── */
+    .quotes-section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 20px 30px;
+    }
+    .quotes-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    @media (max-width: 660px) { .quotes-grid { grid-template-columns: 1fr; } }
+    .quote-card {
+      background: var(--branco);
+      border-left: 5px solid var(--vermelho);
+      padding: 16px;
+    }
+    .quote-card blockquote {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      font-style: italic;
+      line-height: 1.4;
+      margin-bottom: 10px;
+    }
+    .quote-card cite {
+      font-size: 0.72rem;
+      color: #999;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    /* ── RESPONSIVO MOBILE ── */
+
+    /* Header: empilha título e badge em telas pequenas */
+    @media (max-width: 600px) {
+      header { padding: 0 12px; }
+      .header-top {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 12px 0 8px;
+      }
+      .site-subtitle { font-size: 0.6rem; }
+      .badge-credibility { align-self: stretch; text-align: center; }
+    }
+
+    /* Hero: esconde a caixinha do Latão no mobile para focar no texto */
+    @media (max-width: 720px) {
+      .hero { padding: 20px 14px; }
+      .hero-img-box { display: none; }
+    }
+
+    /* Container: menos padding lateral no mobile */
+    @media (max-width: 600px) {
+      .container { padding: 16px 12px; gap: 18px; }
+      .quotes-section { padding: 0 12px 20px; }
+    }
+
+    /* Stats row: quebra em 2 linhas se necessário */
+    @media (max-width: 380px) {
+      .stats-row { flex-wrap: wrap; gap: 10px; justify-content: center; }
+      .stat { flex: 1 1 40%; }
+    }
+
+    /* Strip: reduz fonte no mobile para não transbordar */
+    @media (max-width: 520px) {
+      .strip { font-size: 0.72rem; padding: 12px 12px; letter-spacing: 0; }
+    }
+
+    /* Cards: garante 1 coluna em telas bem pequenas */
+    @media (max-width: 480px) {
+      .news-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Quotes: já tem breakpoint em 660px, melhora espaçamento */
+    @media (max-width: 600px) {
+      .quotes-section .section-title { margin-top: 16px; }
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--preto);
+      color: #666;
+      padding: 24px 20px;
+      text-align: center;
+      font-size: 0.75rem;
+      line-height: 1.8;
+      margin-top: 10px;
+    }
+    footer strong { color: var(--amarelo); }
+    footer .disclaimer {
+      max-width: 600px;
+      margin: 10px auto 0;
+      font-size: 0.68rem;
+      color: #444;
+    }
+  </style>
+</head>
+<body>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <span class="ticker-label">⚡ URGENTE</span>
+  <span class="ticker-content">
+    BREAKING: Weide José confirma que o Sol nasce no Oeste &nbsp;|&nbsp;
+    EXCLUSIVO: Especialista Latão prova que gelo é quente &nbsp;|&nbsp;
+    POLÊMICA: Brasil fica na Europa, diz fonte confiável &nbsp;|&nbsp;
+    CHOCANTE: Água não molha, apenas umedece levemente &nbsp;|&nbsp;
+    REVELAÇÃO: Peixe não gosta de água, confirma Weide &nbsp;|&nbsp;
+    INÉDITO: A Lua é maior que o Sol, mas parece menor por estar mais perto &nbsp;|&nbsp;
+    BOMBA: Pizza foi inventada em Minas Gerais em 1943 &nbsp;|&nbsp;
+  </span>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-top" style="max-width:1100px;margin:0 auto;">
+    <div>
+      <div class="site-title">WEIDE<span>.ORG</span></div>
+      <div class="site-subtitle">O portal de notícias mais preciso¹ do Brasil — ¹segundo Weide José</div>
+    </div>
+    <div class="badge-credibility">
+      <span class="pct">2%</span>
+      de credibilidade<br>e subindo²<br><small style="font-size:0.6rem;color:#555">²não está subindo</small>
+    </div>
+  </div>
+  <nav style="max-width:1100px;margin:0 auto;">
+    <a href="#">Ciência</a>
+    <a href="#">Geografi(a)</a>
+    <a href="#">Culinária</a>
+    <a href="#">Saúde</a>
+    <a href="#">Tecnologia</a>
+    <a href="#">História</a>
+    <a href="#">Economia</a>
+    <a href="#">Opinião de Latão</a>
+    <a href="cartinhas.html" style="color:var(--amarelo);">🃏 Cartinhas</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div>
+      <span class="hero-badge">🚨 Manchete do Dia</span>
+      <h1>CONFIRMADO: O céu não é azul — é verde, mas seus olhos estão errados</h1>
+      <p>
+        Em estudo exclusivo conduzido da janela do próprio quarto, o renomado especialista
+        Weide José, PhD honorário (autoatribuído), apresenta evidências irrefutáveis de que
+        a cor que enxergamos no céu é resultado de um defeito coletivo na visão humana.
+        "Todo mundo tá vendo errado menos eu", explicou o pesquisador com segurança absoluta.
+      </p>
+      <div class="hero-meta">
+        Por <strong>Weide José "Latão"</strong> &nbsp;·&nbsp; Editor-Chefe &nbsp;·&nbsp; 23 de abril de 2026 &nbsp;·&nbsp; Fonte: ele mesmo
+      </div>
+    </div>
+    <div class="hero-img-box">
+      <span class="latao-icon">🥫</span>
+      <p>Weide José (Latão)<br>Especialista em tudo</p>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="container">
+
+  <!-- FEED DE NOTÍCIAS -->
+  <main>
+    <div class="section-title"><span>Últimas Notícias</span></div>
+    <div class="news-grid">
+
+      <div class="card">
+        <div class="card-img">
+          🌊
+          <span class="card-stamp">Exclusivo</span>
+        </div>
+        <div class="card-body">
+          <h3>NOVO ESTUDO: Água não molha — apenas cria a sensação de umidade</h3>
+          <p>
+            Após anos de pesquisa empírica (molhando a mão e negando o resultado),
+            Weide José conclui que a água em si é seca. "O que molha é o contato com
+            o ar úmido ao redor dela", explica o cientista, sem aceitar contestações.
+          </p>
+          <div class="card-footer">
+            <span class="author">Weide José</span>
+            <span>Fonte: fé</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-img">
+          🧊
+          <span class="card-stamp yellow">Urgente</span>
+        </div>
+        <div class="card-body">
+          <h3>REVELAÇÃO: Gelo é quente — o frio é só uma sensação psicológica</h3>
+          <p>
+            Latão esclarece de uma vez por todas: "Gelo não é frio. Se fosse frio,
+            derreteria com o calor, mas ele some — ou seja, some porque é quente e
+            evapora por dentro." Física quântica, segundo ele próprio.
+          </p>
+          <div class="card-footer">
+            <span class="author">Weide José</span>
+            <span>Peer-review: nenhum</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-img">
+          🌍
+          <span class="card-stamp">Geopolítica</span>
+        </div>
+        <div class="card-body">
+          <h3>CHOCANTE: Brasil fica na Europa — mapas estão errados há séculos</h3>
+          <p>
+            "Todo mundo coloca o Brasil na América do Sul, mas basta olhar pro clima
+            de São Paulo pra perceber que faz mais sentido ser Europa", argumenta o
+            geógrafo autodidata. Organização dos mapas foi "convenção política", diz Latão.
+          </p>
+          <div class="card-footer">
+            <span class="author">Weide José</span>
+            <span>Atlas: não consultado</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-img">
+          🌙
+          <span class="card-stamp yellow">Astronomia</span>
+        </div>
+        <div class="card-body">
+          <h3>POLÊMICA: A Lua é maior que o Sol — a distância engana todo mundo</h3>
+          <p>
+            "Se a Lua fosse menor que o Sol, não cobriria ele no eclipse, né? Então
+            ela é maior. Simples." A teoria do especialista desafia 4 séculos de
+            astronomia com precisão cirúrgica e zero equações.
+          </p>
+          <div class="card-footer">
+            <span class="author">Weide José</span>
+            <span>NASA: discordou, ignorado</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-img">
+          🐟
+          <span class="card-stamp">Natureza</span>
+        </div>
+        <div class="card-body">
+          <h3>INÉDITO: Peixe não gosta de água — só vive nela por falta de opção</h3>
+          <p>
+            Weide José observou um peixe no aquário por 40 minutos e chegou à conclusão
+            de que o animal parecia entediado. "Ele fica tentando sair. Claramente odeia
+            a água. Ninguém perguntou pra ele se queria morar ali."
+          </p>
+          <div class="card-footer">
+            <span class="author">Weide José</span>
+            <span>Biologia: contrariada</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-img">
+          🍕
+          <span class="card-stamp yellow">Culinária</span>
+        </div>
+        <div class="card-body">
+          <h3>BOMBA: Pizza foi inventada em Minas Gerais — italianos copiaram a receita</h3>
+          <p>
+            Documentos históricos inexistentes comprovam que um padeiro mineiro criou
+            a pizza em 1743. "Os italianos vieram aqui, viram, copiaram e mudaram o nome.
+            Típico", relata Latão com convicção de quem estava lá.
+          </p>
+          <div class="card-footer">
+            <span class="author">Weide José</span>
+            <span>História: reescrita</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-img">
+          ☀️
+          <span class="card-stamp">Astronomia</span>
+        </div>
+        <div class="card-body">
+          <h3>URGENTE: Sol comprovadamente nasce no Oeste após revisão de bússola</h3>
+          <p>
+            "Eu vi nascer do lado esquerdo da janela, e minha janela dá pro Leste,
+            então nasceu no Oeste." Questionado sobre a bússola apontar o contrário,
+            Weide respondeu: "A bússola estava torta."
+          </p>
+          <div class="card-footer">
+            <span class="author">Weide José</span>
+            <span>Bússola: demitida</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-img">
+          🧠
+          <span class="card-stamp yellow">Saúde</span>
+        </div>
+        <div class="card-body">
+          <h3>ESPECIAL: Humanos usam 100% do cérebro — o mito é o mito dos 10%</h3>
+          <p>
+            Weide José, em raro acerto científico, confirma que usamos 100% do cérebro.
+            Porém acrescenta: "E eu uso 110% porque tenho neurônios extras que a ciência
+            ainda não descobriu." Exame neurológico: não realizado.
+          </p>
+          <div class="card-footer">
+            <span class="author">Weide José</span>
+            <span>Diagnóstico: próprio</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+
+    <div class="author-box">
+      <span class="avatar">🥫</span>
+      <h3>Weide José</h3>
+      <div class="cargo">Editor-Chefe · Especialista em Tudo · Latão</div>
+      <p>
+        Weide José, carinhosamente apelidado de Latão, é o fundador, editor-chefe,
+        único jornalista, único leitor assíduo e principal fonte de todas as notícias
+        publicadas neste portal. Formado na Escola da Vida™ (sem diploma),
+        Weide possui opiniões firmes sobre todos os assuntos conhecidos e alguns
+        desconhecidos. Nunca errou. Nunca vai errar.
+      </p>
+      <div class="stats-row">
+        <div class="stat"><div class="num">0</div><div class="lbl">Acertos confirmados</div></div>
+        <div class="stat"><div class="num">∞</div><div class="lbl">Certeza própria</div></div>
+        <div class="stat"><div class="num">0</div><div class="lbl">Fontes consultadas</div></div>
+      </div>
+    </div>
+
+    <div class="verdadometro">
+      <h4>🔬 Verdadômetro Weide</h4>
+      <div class="meter-bar"><div class="meter-fill"></div></div>
+      <div class="meter-label"><span>Mentira</span><span>Verdade</span></div>
+      <div class="meter-result">⚠ Status: Irreversivelmente Errado</div>
+    </div>
+
+    <div class="aviso-box">
+      <strong>⚠️ Aviso Editorial</strong>
+      Nenhuma das informações deste site foi verificada, checada, revisada ou
+      sequer relida pelo autor. Qualquer semelhança com a realidade é
+      <em>mera coincidência não intencional</em> e será corrigida assim que detectada.
+    </div>
+
+    <div class="ranking-box">
+      <h4>🏆 Top Mentiras da Semana</h4>
+      <div class="ranking-item">
+        <span class="rank-num top">1</span>
+        <p>"O gelo é quente, vocês é que estão errados"</p>
+      </div>
+      <div class="ranking-item">
+        <span class="rank-num top">2</span>
+        <p>"A pizza é mineira, pesquisa aí"</p>
+      </div>
+      <div class="ranking-item">
+        <span class="rank-num top">3</span>
+        <p>"Bússola tava torta, o sol nasce no Oeste sim"</p>
+      </div>
+      <div class="ranking-item">
+        <span class="rank-num">4</span>
+        <p>"Peixe não quer viver na água"</p>
+      </div>
+      <div class="ranking-item">
+        <span class="rank-num">5</span>
+        <p>"Brasil é europeu, geograficamente falando"</p>
+      </div>
+    </div>
+
+  </aside>
+</div>
+
+<!-- STRIP -->
+<div class="strip">
+  🔴 AO VIVO — Weide José está atualmente discutindo com o dicionário sobre o significado da palavra "errado"
+</div>
+
+<!-- CITAÇÕES -->
+<div class="quotes-section">
+  <div class="section-title" style="margin-top:24px;"><span>Frases Históricas de Latão</span></div>
+  <div class="quotes-grid">
+    <div class="quote-card">
+      <blockquote>"Eu não fico afirmando coisa errada. Fico afirmando coisas que as pessoas ainda não entenderam que são certas."</blockquote>
+      <cite>— Weide José, em entrevista a si mesmo</cite>
+    </div>
+    <div class="quote-card">
+      <blockquote>"Google tá desatualizado. Quando eles atualizarem, vão ver que eu estava certo o tempo todo."</blockquote>
+      <cite>— Weide José, após pesquisa desmentir teoria</cite>
+    </div>
+    <div class="quote-card">
+      <blockquote>"Não é que eu errei. É que a realidade mudou depois que eu falei e não me avisaram."</blockquote>
+      <cite>— Weide José, sempre</cite>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <strong>WEIDE.ORG</strong> — O Portal da Verdade Alternativa™<br>
+  Fundado em 2026 por Weide José (Latão) · Todas as opiniões são fatos · Todos os fatos são opiniões<br>
+  <div class="disclaimer">
+    ⚠️ Este site é uma sátira. Nenhuma informação aqui publicada deve ser levada a sério,
+    assim como nenhuma informação dita por Weide José em qualquer contexto da vida real.
+    Qualquer dano causado pela leitura deste conteúdo é responsabilidade de quem acreditou.
+  </div>
+</footer>
+
+</body>
+</html>
