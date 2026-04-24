@@ -35,7 +35,8 @@
       de credibilidade<br>e subindo²<br><small style="font-size:0.6rem;color:#555">²não está subindo</small>
     </div>
   </div>
-  <nav style="max-width:1100px;margin:0 auto;">
+  <nav>
+    <div style="max-width:1100px;margin:0 auto;display:flex;">
     <a href="index.html">Início</a>
     <a href="index.html">Ciência</a>
     <a href="index.html">Geografi(a)</a>
@@ -48,6 +49,7 @@
     <a href="cartinhas.html" class="ativo">🃏 Cartinhas</a>
     <a href="herois.html">⚔️ Heróis</a>
     <a href="ranking-nerd.html">🏆 Ranking Nerd</a>
+    </div>
   </nav>
 </header>
 
@@ -135,7 +137,6 @@ function renderClasse(cls) {
         <div class="cartinha" onclick="openLightbox('${escAttr(path)}','${escAttr(name)}')">
           <div class="cartinha-img-wrap">
             <img src="${escAttr(path)}" alt="${escAttr(name)}" loading="lazy">
-            ${cost ? `<span class="cartinha-custo">${cost}</span>` : ''}
           </div>
           <div class="cartinha-nome">${name}</div>
         </div>`;
@@ -154,7 +155,6 @@ function renderClasse(cls) {
         <div class="cartinha" onclick="openLightbox('${escAttr(path)}','${escAttr(name)}')">
           <div class="cartinha-img-wrap">
             <img src="${escAttr(path)}" alt="${escAttr(name)}" loading="lazy">
-            ${cost ? `<span class="cartinha-custo nova">${cost}</span>` : ''}
           </div>
           <div class="cartinha-nome nova">${name}</div>
         </div>`;

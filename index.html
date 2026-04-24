@@ -35,18 +35,20 @@
       de credibilidade<br>e subindo²<br><small style="font-size:0.6rem;color:#555">²não está subindo</small>
     </div>
   </div>
-  <nav style="max-width:1100px;margin:0 auto;">
-    <a href="#">Ciência</a>
-    <a href="#">Geografi(a)</a>
-    <a href="#">Culinária</a>
-    <a href="#">Saúde</a>
-    <a href="#">Tecnologia</a>
-    <a href="#">História</a>
-    <a href="#">Economia</a>
-    <a href="#">Opinião de Latão</a>
+  <nav>
+    <div style="max-width:1100px;margin:0 auto;display:flex;">
+    <a href="#sec-ciencia" class="nav-link">Ciência</a>
+    <a href="#sec-geografia" class="nav-link">Geografia</a>
+    <a href="#sec-culinaria" class="nav-link">Culinária</a>
+    <a href="#sec-saude" class="nav-link">Saúde</a>
+    <a href="#sec-tecnologia" class="nav-link">Tecnologia</a>
+    <a href="#sec-historia" class="nav-link">História</a>
+    <a href="#sec-economia" class="nav-link">Economia</a>
+    <a href="#sec-opiniao" class="nav-link">Opinião de Latão</a>
     <a href="cartinhas.html" style="color:var(--amarelo);">🃏 Cartinhas</a>
     <a href="herois.html" style="color:var(--amarelo);">⚔️ Heróis</a>
     <a href="ranking-nerd.html" style="color:var(--amarelo);">🏆 Ranking Nerd</a>
+    </div>
   </nav>
 </header>
 
@@ -81,7 +83,7 @@
     <div class="section-title"><span>Últimas Notícias</span></div>
     <div class="news-grid">
 
-      <div class="card">
+      <div id="sec-tecnologia" class="card">
         <div class="card-img">
           🌊
           <span class="card-stamp">Exclusivo</span>
@@ -100,7 +102,7 @@
         </div>
       </div>
 
-      <div class="card">
+      <div id="sec-ciencia" class="card">
         <div class="card-img">
           🧊
           <span class="card-stamp yellow">Urgente</span>
@@ -119,26 +121,7 @@
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-img">
-          🌍
-          <span class="card-stamp">Geopolítica</span>
-        </div>
-        <div class="card-body">
-          <h3>CHOCANTE: Brasil fica na Europa — mapas estão errados há séculos</h3>
-          <p>
-            "Todo mundo coloca o Brasil na América do Sul, mas basta olhar pro clima
-            de São Paulo pra perceber que faz mais sentido ser Europa", argumenta o
-            geógrafo autodidata. Organização dos mapas foi "convenção política", diz Latão.
-          </p>
-          <div class="card-footer">
-            <span class="author">Weide José</span>
-            <span>Atlas: não consultado</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
+      <div id="sec-historia" class="card">
         <div class="card-img">
           🌙
           <span class="card-stamp yellow">Astronomia</span>
@@ -157,7 +140,7 @@
         </div>
       </div>
 
-      <div class="card">
+      <div id="sec-saude" class="card">
         <div class="card-img">
           🐟
           <span class="card-stamp">Natureza</span>
@@ -176,7 +159,7 @@
         </div>
       </div>
 
-      <div class="card">
+      <div id="sec-culinaria" class="card">
         <div class="card-img">
           🍕
           <span class="card-stamp yellow">Culinária</span>
@@ -195,7 +178,7 @@
         </div>
       </div>
 
-      <div class="card">
+      <div id="sec-economia" class="card">
         <div class="card-img">
           ☀️
           <span class="card-stamp">Astronomia</span>
@@ -214,10 +197,10 @@
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-img">
+      <div id="sec-opiniao" class="card" style="grid-column: 1 / -1;">
+        <div class="card-img" style="height:80px;">
           🧠
-          <span class="card-stamp yellow">Saúde</span>
+          <span class="card-stamp yellow">Opinião de Latão</span>
         </div>
         <div class="card-body">
           <h3>ESPECIAL: Humanos usam 100% do cérebro — o mito é o mito dos 10%</h3>
@@ -240,7 +223,7 @@
   <aside class="sidebar">
 
     <div class="author-box">
-      <span class="avatar">🥫</span>
+      <span class="avatar"><img src="WeideRedator.png" alt="Weide José"></span>
       <h3>Weide José</h3>
       <div class="cargo">Editor-Chefe · Especialista em Tudo · Latão</div>
       <p>
@@ -298,6 +281,203 @@
   </aside>
 </div>
 
+<!-- SECTION: GEOGRAFIA -->
+<section id="sec-geografia" class="geo-section">
+  <div class="geo-inner">
+    <div class="section-title" style="margin-bottom:28px;"><span>🌍 Geografi(a) — Segundo Latão</span></div>
+
+    <div class="geo-layout">
+
+      <!-- MAPA SVG INTERATIVO -->
+      <div class="geo-map-wrap">
+        <div class="geo-map-label">MAPA-MÚNDI CORRIGIDO POR WEIDE JOSÉ™</div>
+        <div class="geo-map-container">
+          <!-- Simplified world map SVG -->
+          <svg viewBox="0 0 900 450" xmlns="http://www.w3.org/2000/svg" class="world-svg">
+            <!-- Ocean background -->
+            <rect width="900" height="450" fill="#1a3458"/>
+            <!-- Grid lines -->
+            <line x1="0" y1="225" x2="900" y2="225" stroke="#243f6a" stroke-width="1"/>
+            <line x1="450" y1="0" x2="450" y2="450" stroke="#243f6a" stroke-width="1"/>
+            <line x1="0" y1="112" x2="900" y2="112" stroke="#1e3a60" stroke-width="0.5" stroke-dasharray="4,4"/>
+            <line x1="0" y1="337" x2="900" y2="337" stroke="#1e3a60" stroke-width="0.5" stroke-dasharray="4,4"/>
+
+            <!-- NORTH AMERICA -->
+            <path d="M 95 90 L 145 68 L 210 62 L 240 75 L 255 95 L 260 130 L 235 158 L 220 185 L 200 200 L 175 215 L 150 228 L 135 250 L 118 262 L 110 240 L 98 215 L 85 190 L 80 160 L 88 125 Z" fill="#2d5a3d" stroke="#4a8a5d" stroke-width="1.5"/>
+            <!-- Greenland -->
+            <path d="M 270 30 L 310 22 L 340 35 L 335 60 L 305 70 L 275 58 Z" fill="#2d5a3d" stroke="#4a8a5d" stroke-width="1"/>
+
+            <!-- CENTRAL AMERICA & CARIBBEAN -->
+            <path d="M 175 215 L 195 225 L 200 248 L 180 260 L 162 252 L 158 235 Z" fill="#2d5a3d" stroke="#4a8a5d" stroke-width="1"/>
+
+            <!-- SOUTH AMERICA -->
+            <path d="M 195 248 L 225 238 L 260 245 L 290 255 L 305 280 L 315 315 L 305 355 L 280 378 L 255 385 L 230 370 L 210 345 L 200 315 L 195 285 Z" fill="#2d5a3d" stroke="#4a8a5d" stroke-width="1.5"/>
+
+            <!-- EUROPE -->
+            <path d="M 420 68 L 455 62 L 480 72 L 488 90 L 475 108 L 458 115 L 440 112 L 425 105 L 415 88 Z" fill="#2d5a3d" stroke="#4a8a5d" stroke-width="1.5"/>
+            <!-- Scandinavia -->
+            <path d="M 455 42 L 475 38 L 490 52 L 485 72 L 465 75 L 452 62 Z" fill="#2d5a3d" stroke="#4a8a5d" stroke-width="1"/>
+            <!-- UK & Ireland -->
+            <path d="M 405 78 L 418 72 L 422 88 L 410 95 L 402 90 Z" fill="#2d5a3d" stroke="#4a8a5d" stroke-width="1"/>
+
+            <!-- AFRICA -->
+            <path d="M 430 120 L 465 112 L 498 115 L 518 130 L 525 160 L 530 200 L 522 245 L 510 285 L 498 318 L 480 338 L 458 342 L 438 330 L 420 305 L 410 268 L 408 230 L 412 190 L 418 155 Z" fill="#2d5a3d" stroke="#4a8a5d" stroke-width="1.5"/>
+
+            <!-- MIDDLE EAST -->
+            <path d="M 525 115 L 560 110 L 578 122 L 572 145 L 550 155 L 528 148 Z" fill="#2d5a3d" stroke="#4a8a5d" stroke-width="1"/>
+
+            <!-- ASIA (simplified) -->
+            <path d="M 560 58 L 630 48 L 710 52 L 760 62 L 795 82 L 805 110 L 795 138 L 760 155 L 720 162 L 680 168 L 648 172 L 618 165 L 590 152 L 568 135 L 548 115 L 548 88 Z" fill="#2d5a3d" stroke="#4a8a5d" stroke-width="1.5"/>
+            <!-- South Asia -->
+            <path d="M 618 165 L 650 172 L 668 200 L 658 228 L 638 235 L 618 220 L 608 195 Z" fill="#2d5a3d" stroke="#4a8a5d" stroke-width="1"/>
+            <!-- Southeast Asia -->
+            <path d="M 700 162 L 738 168 L 752 185 L 745 210 L 722 220 L 705 205 L 698 182 Z" fill="#2d5a3d" stroke="#4a8a5d" stroke-width="1"/>
+
+            <!-- AUSTRALIA -->
+            <path d="M 728 265 L 778 255 L 815 265 L 830 290 L 825 325 L 800 345 L 765 352 L 738 340 L 722 315 L 720 285 Z" fill="#2d5a3d" stroke="#4a8a5d" stroke-width="1.5"/>
+
+            <!-- MAP PINS with hover tooltips -->
+
+            <!-- Brazil pin "EUROPA" -->
+            <g class="map-pin" data-news="brasil-europa" style="cursor:pointer">
+              <circle cx="248" cy="295" r="10" fill="#c0000a" stroke="#fff" stroke-width="2" class="pin-circle"/>
+              <text x="248" y="299" text-anchor="middle" font-size="8" fill="#fff" font-weight="700" class="pin-icon">🌍</text>
+              <rect x="188" y="308" width="122" height="28" rx="2" fill="#c0000a" class="pin-tooltip"/>
+              <text x="249" y="320" text-anchor="middle" font-size="7" fill="#fff" font-weight="700" class="pin-tooltip-text">BRASIL FICA NA EUROPA</text>
+              <text x="249" y="330" text-anchor="middle" font-size="6" fill="#ffda60" class="pin-tooltip-text">— Lat. José, 2026</text>
+            </g>
+
+            <!-- Antarctica "Quente" -->
+            <g class="map-pin" data-news="antartida" style="cursor:pointer">
+              <circle cx="450" cy="430" r="10" fill="#f5c400" stroke="#111" stroke-width="2" class="pin-circle"/>
+              <text x="450" y="434" text-anchor="middle" font-size="8" fill="#111" font-weight="700" class="pin-icon">🔥</text>
+              <rect x="388" y="408" width="125" height="20" rx="2" fill="#f5c400" class="pin-tooltip"/>
+              <text x="450" y="422" text-anchor="middle" font-size="7" fill="#111" font-weight="700" class="pin-tooltip-text">ANTÁRTIDA É QUENTE NA VERDADE</text>
+            </g>
+
+            <!-- Europe "Pizza" -->
+            <g class="map-pin" data-news="pizza-mg" style="cursor:pointer">
+              <circle cx="452" cy="88" r="10" fill="#c0000a" stroke="#fff" stroke-width="2" class="pin-circle"/>
+              <text x="452" y="92" text-anchor="middle" font-size="8" fill="#fff" font-weight="700" class="pin-icon">🍕</text>
+              <rect x="390" y="100" width="128" height="28" rx="2" fill="#c0000a" class="pin-tooltip"/>
+              <text x="454" y="112" text-anchor="middle" font-size="7" fill="#fff" font-weight="700" class="pin-tooltip-text">ITALIANOS COPIARAM A PIZZA</text>
+              <text x="454" y="122" text-anchor="middle" font-size="6" fill="#ffda60" class="pin-tooltip-text">de Minas Gerais, confirmado</text>
+            </g>
+
+            <!-- Australia "Upside Down" -->
+            <g class="map-pin" data-news="australia" style="cursor:pointer">
+              <circle cx="775" cy="305" r="10" fill="#c0000a" stroke="#fff" stroke-width="2" class="pin-circle"/>
+              <text x="775" y="309" text-anchor="middle" font-size="8" fill="#fff" font-weight="700" class="pin-icon">🙃</text>
+              <rect x="700" y="318" width="148" height="28" rx="2" fill="#c0000a" class="pin-tooltip"/>
+              <text x="774" y="330" text-anchor="middle" font-size="7" fill="#fff" font-weight="700" class="pin-tooltip-text">AUSTRALIANOS VIVEM DE CABEÇA BAIXO</text>
+              <text x="774" y="340" text-anchor="middle" font-size="6" fill="#ffda60" class="pin-tooltip-text">e não reparam, diz especialista</text>
+            </g>
+
+            <!-- Pacific Ocean "Terra Plana" -->
+            <g class="map-pin" data-news="terra-plana" style="cursor:pointer">
+              <circle cx="860" cy="200" r="10" fill="#f5c400" stroke="#111" stroke-width="2" class="pin-circle"/>
+              <text x="860" y="204" text-anchor="middle" font-size="8" fill="#111" font-weight="700" class="pin-icon">🌐</text>
+              <rect x="726" y="198" width="128" height="20" rx="2" fill="#f5c400" class="pin-tooltip"/>
+              <text x="790" y="212" text-anchor="middle" font-size="7" fill="#111" font-weight="700" class="pin-tooltip-text">BORDA DA TERRA DETECTADA AQUI</text>
+            </g>
+
+            <!-- North Pole sun rises west -->
+            <g class="map-pin" data-news="sol-oeste" style="cursor:pointer">
+              <circle cx="450" cy="30" r="10" fill="#c0000a" stroke="#fff" stroke-width="2" class="pin-circle"/>
+              <text x="450" y="34" text-anchor="middle" font-size="8" fill="#fff" font-weight="700" class="pin-icon">☀️</text>
+              <rect x="388" y="42" width="126" height="20" rx="2" fill="#c0000a" class="pin-tooltip"/>
+              <text x="451" y="56" text-anchor="middle" font-size="7" fill="#fff" font-weight="700" class="pin-tooltip-text">SOL NASCE NO OESTE, CONFIRMADO</text>
+            </g>
+
+            <!-- Map title watermark -->
+            <text x="10" y="445" font-size="7" fill="#243f6a" font-family="serif">© 2026 Weide José Cartografia LTDA — Precisão: 0%</text>
+          </svg>
+
+          <!-- Animated "CORRIGIDO" stamp -->
+          <div class="geo-stamp">CORRIGIDO<br>POR LATÃO</div>
+        </div>
+        <div class="geo-map-caption">
+          ⚠️ Este mapa foi atualizado com as correções geográficas definitivas de Weide José. Países mal posicionados foram relocados conforme intuição do autor. ONU notificada, ignorou.
+        </div>
+      </div>
+
+      <!-- GEO NEWS CARDS -->
+      <div class="geo-news">
+        <div class="section-title" style="margin-bottom:16px;"><span>📍 Notícias de Campo</span></div>
+
+        <div class="geo-card">
+          <div class="geo-card-pin">🌍</div>
+          <div class="geo-card-content">
+            <span class="geo-card-tag">GEOPOLÍTICA</span>
+            <h3>CHOCANTE: Brasil fica na Europa — mapas estão errados há séculos</h3>
+            <p>
+              "Todo mundo coloca o Brasil na América do Sul, mas basta olhar pro clima
+              de São Paulo pra perceber que faz mais sentido ser Europa", argumenta o
+              geógrafo autodidata. Organização dos mapas foi "convenção política", diz Latão.
+            </p>
+            <div class="geo-card-footer">
+              <span class="author">Weide José</span>
+              <span>Atlas: não consultado</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="geo-card">
+          <div class="geo-card-pin geo-pin-yellow">🙃</div>
+          <div class="geo-card-content">
+            <span class="geo-card-tag geo-tag-yellow">AUSTRALIA</span>
+            <h3>REVELADO: Australianos vivem de cabeça para baixo e não sabem</h3>
+            <p>
+              Weide José constatou que a Austrália fica "embaixo" do mapa.
+              "Se o mapa é vertical e eles estão no fundo, estão de cabeça pra baixo.
+              Simples. Por isso têm sotaque diferente — falta de sangue na cabeça."
+            </p>
+            <div class="geo-card-footer">
+              <span class="author">Weide José</span>
+              <span>Neurologia: contrariada</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="geo-card">
+          <div class="geo-card-pin">🌐</div>
+          <div class="geo-card-content">
+            <span class="geo-card-tag">COSMOLOGIA</span>
+            <h3>EXCLUSIVO: Borda da Terra encontrada no Oceano Pacífico — próxima expedição em breve</h3>
+            <p>
+              "Se a terra fosse redonda, a água dos oceanos escorregaria pra baixo.
+              Como não escorrega, é plana. E a borda fica no Pacífico, longe o suficiente
+              pra ninguém ter ido conferir e me contrariar", explica Latão.
+            </p>
+            <div class="geo-card-footer">
+              <span class="author">Weide José</span>
+              <span>NASA: bloqueou no Twitter</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="geo-card">
+          <div class="geo-card-pin geo-pin-yellow">🔥</div>
+          <div class="geo-card-content">
+            <span class="geo-card-tag geo-tag-yellow">CLIMA</span>
+            <h3>BOMBA: Antártida é quente — foto com gelo é de estúdio</h3>
+            <p>
+              "Ninguém foi até a Antártida confirmar o frio, né? Não tem ninguém lá.
+              As fotos com neve são de estúdio. Na verdade é uma praia enorme com
+              acesso restrito", denuncia o investigador climático.
+            </p>
+            <div class="geo-card-footer">
+              <span class="author">Weide José</span>
+              <span>Meteorologia: sem comentários</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- STRIP -->
 <div class="strip">
   🔴 AO VIVO — Weide José está atualmente discutindo com o dicionário sobre o significado da palavra "errado"
@@ -322,6 +502,10 @@
     <div class="quote-card">
       <blockquote>"Não é que eu errei. É que a realidade mudou depois que eu falei e não me avisaram."</blockquote>
       <cite>— Weide José, sempre</cite>
+    </div>
+    <div class="quote-card">
+      <blockquote>"Seu cu quer minha cara"</blockquote>
+      <cite>— Weide José, após tentar farmar aura</cite>
     </div>
   </div>
 </div>
