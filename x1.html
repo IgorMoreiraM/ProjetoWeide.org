@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>X1 — Gerador de Chave | Weide.org</title>
+  <link rel="stylesheet" href="css/shared.css" />
+  <style>
+    .x1-page { max-width:1300px; margin:0 auto; padding:28px 16px 60px; }
+
+    .x1-title { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3.4rem); font-weight:900; color:var(--preto); text-align:center; letter-spacing:-1px; margin-bottom:4px; }
+    .x1-title span { color:var(--vermelho); }
+    .x1-subtitle { text-align:center; color:#666; font-size:.9rem; margin-bottom:32px; }
+
+    /* setup */
+    .setup-panel { background:#fff; border:2px solid var(--preto); border-radius:4px; padding:24px; margin-bottom:32px; display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+    @media(max-width:700px){ .setup-panel{grid-template-columns:1fr;} }
+    .setup-section h3 { font-size:.78rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:#888; margin-bottom:12px; border-bottom:2px solid var(--amarelo); padding-bottom:6px; }
+    .input-row { display:flex; gap:8px; margin-bottom:10px; }
+    .input-row input { flex:1; padding:10px 14px; border:2px solid #ddd; border-radius:3px; font-size:.95rem; font-family:inherit; outline:none; transition:border-color .2s; }
+    .input-row input:focus { border-color:var(--vermelho); }
+
+    .btn { padding:10px 18px; border:none; border-radius:3px; font-size:.88rem; font-weight:700; font-family:inherit; cursor:pointer; transition:background .15s,transform .1s; letter-spacing:.05em; text-transform:uppercase; }
+    .btn:active { transform:scale(.97); }
+    .btn-red  { background:var(--vermelho); color:#fff; }
+    .btn-red:hover  { background:#a50009; }
+    .btn-yellow { background:var(--amarelo); color:var(--preto); }
+    .btn-yellow:hover { background:#d9af00; }
+    .btn-dark { background:var(--preto); color:#fff; }
+    .btn-dark:hover { background:#333; }
+    .btn-gray { background:#ddd; color:#444; }
+    .btn-gray:hover { background:#ccc; }
+
+    .players-list { list-style:none; display:flex; flex-wrap:wrap; gap:6px; min-height:40px; }
+    .players-list li { background:var(--preto); color:#fff; padding:5px 12px; border-radius:20px; font-size:.82rem; font-weight:600; display:flex; align-items:center; gap:6px; }
+    .players-list li .rm { background:none; border:none; color:#aaa; cursor:pointer; font-size:.8rem; padding:0; line-height:1; }
+    .players-list li .rm:hover { color:var(--amarelo); }
+    .player-count { font-size:.78rem; color:#999; margin-top:8px; }
+    .player-count strong { color:var(--vermelho); }
+
+    .size-selector { display:flex; gap:10px; flex-wrap:wrap; }
+    .size-btn { flex:1; min-width:80px; padding:14px 10px; border:2px solid #ddd; background:#f8f8f8; border-radius:4px; cursor:pointer; text-align:center; transition:all .15s; font-family:inherit; }
+    .size-btn .sn { display:block; font-size:1.8rem; font-weight:900; font-family:'Playfair Display',serif; color:#ccc; transition:color .15s; }
+    .size-btn .sl { font-size:.7rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#bbb; transition:color .15s; }
+    .size-btn:hover,.size-btn.active { border-color:var(--vermelho); background:#fff0f0; }
+    .size-btn:hover .sn,.size-btn.active .sn { color:var(--vermelho); }
+    .size-btn:hover .sl,.size-btn.active .sl { color:var(--vermelho); }
+
+    .generate-row { margin-top:20px; display:flex; gap:10px; flex-wrap:wrap; }
+    .warning-msg { margin-top:8px; font-size:.8rem; color:var(--vermelho); font-weight:600; }
+
+    /* bracket area */
+    .bracket-area { background:#fff; border:2px solid var(--preto); border-radius:4px; padding:28px 16px; overflow-x:auto; }
+    .bracket-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px; }
+    .bracket-header h2 { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:900; }
+    .tip-box { background:#fffde7; border:1px solid var(--amarelo); border-radius:3px; padding:8px 14px; font-size:.78rem; color:#555; margin-bottom:18px; }
+    .bracket-actions { margin-top:20px; display:flex; gap:10px; flex-wrap:wrap; }
+
+    /* bracket slots */
+    .bslot {
+      position:absolute;
+      width:150px;
+      height:36px;
+      border:2px solid #ddd;
+      border-radius:3px;
+      display:flex;
+      align-items:center;
+      padding:0 10px;
+      font-size:.82rem;
+      font-weight:600;
+      background:#fafafa;
+      box-sizing:border-box;
+      user-select:none;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      cursor:default;
+      transition:background .15s, border-color .15s;
+    }
+    .bslot.drag-handle { cursor:grab; }
+    .bslot.drag-handle:active { cursor:grabbing; }
+    .bslot.dragging { opacity:.35; }
+    .bslot.drag-over { border-color:var(--amarelo)!important; background:#fffbe6!important; }
+    .bslot.s-winner { background:#e8f5e9; border-color:#43a047; color:#2e7d32; }
+    .bslot.s-loser  { background:#f5f5f5; border-color:#ddd; color:#bbb; text-decoration:line-through; }
+    .bslot.s-bye    { background:#f0f0f0; border-color:#ddd; color:#bbb; font-style:italic; border-style:dashed; }
+    .bslot.s-empty  { background:#f8f8f8; color:#ccc; font-style:italic; }
+    .bslot.clickable { cursor:pointer; }
+    .bslot.clickable:hover { background:#fff8e1; border-color:var(--amarelo); }
+    .bslot.s-winner.clickable:hover { background:#c8e6c9; }
+
+    /* round labels */
+    .rlabel {
+      position:absolute;
+      font-size:.68rem;
+      font-weight:700;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      color:#aaa;
+      text-align:center;
+    }
+
+    /* vs badge */
+    .vs-badge {
+      position:absolute;
+      font-size:.6rem;
+      font-weight:700;
+      color:#bbb;
+      letter-spacing:.05em;
+    }
+
+    /* champion */
+    .champ-label {
+      position:absolute;
+      font-size:.68rem;
+      font-weight:700;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      color:var(--amarelo);
+      text-align:center;
+    }
+    .champ-slot {
+      position:absolute;
+      width:160px;
+      height:52px;
+      background:var(--preto);
+      color:var(--amarelo);
+      border:3px solid var(--amarelo);
+      border-radius:4px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:.92rem;
+      font-weight:700;
+      font-family:'Playfair Display',serif;
+      text-align:center;
+      padding:0 10px;
+      box-sizing:border-box;
+    }
+    .champ-slot.empty { color:#555; border-color:#555; font-size:.72rem; font-family:inherit; font-style:italic; font-weight:400; }
+
+    /* winner banner */
+    .winner-banner { background:var(--preto); color:var(--amarelo); text-align:center; padding:28px 20px; margin-top:24px; border-radius:4px; display:none; }
+    .winner-banner h2 { font-family:'Playfair Display',serif; font-size:clamp(1.6rem,4vw,2.6rem); font-weight:900; margin-bottom:6px; }
+    .winner-banner p { font-size:.9rem; color:#aaa; }
+    .winner-banner.show { display:block; }
+    .trophy { font-size:3rem; margin-bottom:10px; display:block; }
+  </style>
+</head>
+<body>
+
+<div class="ticker-wrap">
+  <span class="ticker-label">⚡ X1</span>
+  <span class="ticker-content">
+    QUEM É O MAIOR? Gera a chave e descobre &nbsp;|&nbsp;
+    Arraste os nomes para reorganizar antes de começar &nbsp;|&nbsp;
+    Clique no jogador para avançá-lo na chave &nbsp;|&nbsp;
+    Que vença o melhor — ou o mais sortudo &nbsp;|&nbsp;
+  </span>
+</div>
+
+<header>
+  <div class="header-top" style="max-width:1100px;margin:0 auto;">
+    <div>
+      <div class="site-title">WEIDE<span>.ORG</span></div>
+      <div class="site-subtitle">O portal de notícias mais preciso¹ do Brasil — ¹segundo Weide José</div>
+    </div>
+    <div class="badge-credibility">
+      <span class="pct">2%</span>
+      de credibilidade<br>e subindo²<br><small style="font-size:.6rem;color:#555">²não está subindo</small>
+    </div>
+  </div>
+  <nav>
+    <div style="max-width:1100px;margin:0 auto;display:flex;flex-wrap:wrap;">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="cartinhas.html" style="color:var(--amarelo);" class="nav-link">🃏 Cartinhas</a>
+      <a href="herois.html" style="color:var(--amarelo);" class="nav-link">⚔️ Heróis</a>
+      <a href="ranking-nerd.html" style="color:var(--amarelo);" class="nav-link">🏆 Ranking Nerd</a>
+      <a href="x1.html" style="color:var(--vermelho);font-weight:700;" class="nav-link">⚔ X1</a>
+    </div>
+  </nav>
+</header>
+
+<div class="x1-page">
+  <div class="x1-title">⚔ GERADOR DE CHAVE <span>X1</span></div>
+  <div class="x1-subtitle">Adicione os nomes, escolha o tamanho e gere a chave</div>
+
+  <div class="setup-panel">
+    <div class="setup-section">
+      <h3>Jogadores</h3>
+      <div class="input-row">
+        <input type="text" id="nameInput" placeholder="Nome do jogador..." autocomplete="off" />
+        <button class="btn btn-red" onclick="addPlayer()">Adicionar</button>
+      </div>
+      <ul class="players-list" id="playersList"></ul>
+      <div class="player-count" id="playerCount">0 jogadores adicionados</div>
+    </div>
+
+    <div class="setup-section">
+      <h3>Tamanho da Chave</h3>
+      <div class="size-selector">
+        <button class="size-btn active" data-size="8" onclick="selectSize(8,this)">
+          <span class="sn">8</span><span class="sl">Jogadores</span>
+        </button>
+        <button class="size-btn" data-size="6" onclick="selectSize(6,this)">
+          <span class="sn">6</span><span class="sl">Jogadores</span>
+        </button>
+        <button class="size-btn" data-size="10" onclick="selectSize(10,this)">
+          <span class="sn">10</span><span class="sl">Jogadores</span>
+        </button>
+      </div>
+      <div class="generate-row">
+        <button class="btn btn-dark" onclick="generateBracket()" style="flex:1">⚔ Gerar Chave Aleatória</button>
+        <button class="btn btn-gray" onclick="clearAll()">Limpar</button>
+      </div>
+      <div class="warning-msg" id="warningMsg"></div>
+    </div>
+  </div>
+
+  <div class="bracket-area" id="bracketArea" style="display:none;">
+    <div class="bracket-header">
+      <h2>Chave do Torneio</h2>
+    </div>
+    <div class="tip-box">
+      💡 <strong>Drag:</strong> arraste nomes para trocar posições antes de começar.
+      &nbsp;&nbsp;<strong>Click:</strong> clique num jogador para avançá-lo na chave.
+    </div>
+    <div id="bracketWrap" style="position:relative;overflow-x:auto;"></div>
+
+    <div class="winner-banner" id="winnerBanner">
+      <span class="trophy">🏆</span>
+      <h2 id="winnerName">—</h2>
+      <p>Campeão do torneio X1!</p>
+    </div>
+
+    <div class="bracket-actions">
+      <button class="btn btn-gray" onclick="resetWinners()">↺ Resetar Vencedores</button>
+      <button class="btn btn-red"  onclick="generateBracket()">🔀 Sortear Novamente</button>
+      <button class="btn btn-yellow" onclick="startRepescagem()">🔥 Repescagem</button>
+    </div>
+  </div>
+
+  <div class="bracket-area" id="repescagemArea" style="display:none;margin-top:24px;">
+    <div class="bracket-header">
+      <h2>Repescagem</h2>
+    </div>
+    <div class="tip-box" style="background:#fff8e1;border-color:var(--amarelo);">
+      🔥 <strong>Repescagem:</strong> os eliminados da primeira rodada ganham uma segunda chance. Clique num jogador para avançá-lo.
+    </div>
+    <div class="warning-msg" id="repescagemMsg"></div>
+    <div id="repescBracketWrap" style="position:relative;overflow-x:auto;"></div>
+
+    <div class="winner-banner" id="repescagemWinnerBanner">
+      <span class="trophy">🥈</span>
+      <h2 id="repescagemWinnerName">—</h2>
+      <p>Campeão da Repescagem!</p>
+    </div>
+
+    <div class="bracket-actions">
+      <button class="btn btn-gray"   onclick="resetRepescWinners()">↺ Resetar Repescagem</button>
+      <button class="btn btn-yellow" onclick="startRepescagem()">🔀 Resortear Repescagem</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <strong>WEIDE.ORG</strong> — O Portal da Verdade Alternativa™<br>
+  Fundado em 2026 por Weide José (Latão) · Todas as opiniões são fatos · Todos os fatos são opiniões<br>
+  <div class="disclaimer">
+    ⚠️ Este site é uma sátira. Nenhuma informação aqui publicada deve ser levada a sério,
+    assim como nenhuma informação dita por Weide José em qualquer contexto da vida real.
+    Qualquer dano causado pela leitura deste conteúdo é responsabilidade de quem acreditou.
+  </div>
+</footer>
+
+<script>
+// ── STATE ──
+let players = [];
+let bracketSize = 8;
+let bracket = null;
+
+// ── PLAYERS ──
+function addPlayer() {
+  const inp = document.getElementById('nameInput');
+  const name = inp.value.trim();
+  if (!name || players.includes(name)) { inp.value=''; return; }
+  players.push(name);
+  inp.value = '';
+  renderList();
+  inp.focus();
+}
+document.getElementById('nameInput').addEventListener('keydown', e => { if(e.key==='Enter') addPlayer(); });
+
+function removePlayer(i) { players.splice(i,1); renderList(); }
+
+function renderList() {
+  const ul = document.getElementById('playersList');
+  ul.innerHTML = '';
+  players.forEach((p,i) => {
+    const li = document.createElement('li');
+    li.textContent = p;
+    const btn = document.createElement('button');
+    btn.className = 'rm'; btn.textContent = '×';
+    btn.onclick = () => removePlayer(i);
+    li.appendChild(btn); ul.appendChild(li);
+  });
+  document.getElementById('playerCount').innerHTML =
+    `<strong>${players.length}</strong> jogador${players.length!==1?'es':''} adicionado${players.length!==1?'s':''}`;
+}
+
+function selectSize(size, btn) {
+  bracketSize = size;
+  document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function clearAll() {
+  players = []; bracket = null;
+  renderList();
+  document.getElementById('bracketArea').style.display = 'none';
+  document.getElementById('warningMsg').textContent = '';
+}
+
+// ── SHUFFLE ──
+function shuffle(a) {
+  const b = [...a];
+  for(let i=b.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [b[i],b[j]]=[b[j],b[i]]; }
+  return b;
+}
+
+// ── BUILD BRACKET DATA ──
+// A bracket is: { slots[], rounds[][], labels[] }
+// rounds[r][m] = { topRef, bottomRef, winner:'top'|'bottom'|null }
+// ref = { type:'slot', idx } | { type:'match', r, m }
+
+function mkMatch(topRef, bottomRef) { return { topRef, bottomRef, winner:null }; }
+function slot(i)  { return { type:'slot',  idx:i }; }
+function mref(r,m){ return { type:'match', r, m  }; }
+
+function buildBracket8(s) {
+  // R0: 4 matches, R1: 2 matches, R2: final
+  return {
+    slots: s,
+    rounds: [
+      [ mkMatch(slot(0),slot(1)), mkMatch(slot(2),slot(3)), mkMatch(slot(4),slot(5)), mkMatch(slot(6),slot(7)) ],
+      [ mkMatch(mref(0,0),mref(0,1)), mkMatch(mref(0,2),mref(0,3)) ],
+      [ mkMatch(mref(1,0),mref(1,1)) ],
+    ],
+    labels: ['Round 1','Semifinal','Final'],
+  };
+}
+
+function buildBracket6(s) {
+  // Slots 0-3 play R0 (2 matches). Slots 4,5 bye straight to R1.
+  // R1: W(r0m0) vs s4, W(r0m1) vs s5. R2: final.
+  return {
+    slots: s,
+    rounds: [
+      [ mkMatch(slot(0),slot(1)), mkMatch(slot(2),slot(3)) ],
+      [ mkMatch(mref(0,0),slot(4)), mkMatch(mref(0,1),slot(5)) ],
+      [ mkMatch(mref(1,0),mref(1,1)) ],
+    ],
+    labels: ['Round 1','Semifinal','Final'],
+  };
+}
+
+function buildBracket10(s) {
+  // Prelim (R0): s6 vs s7, s8 vs s9 (2 matches)
+  // QF (R1): s0 vs Wp0, s1 vs Wp1, s2 vs s5, s3 vs s4
+  // SF (R2): 2 matches. Final (R3): 1 match.
+  return {
+    slots: s,
+    rounds: [
+      [ mkMatch(slot(6),slot(7)), mkMatch(slot(8),slot(9)) ],
+      [ mkMatch(slot(0),mref(0,0)), mkMatch(slot(1),mref(0,1)), mkMatch(slot(2),slot(5)), mkMatch(slot(3),slot(4)) ],
+      [ mkMatch(mref(1,0),mref(1,1)), mkMatch(mref(1,2),mref(1,3)) ],
+      [ mkMatch(mref(2,0),mref(2,1)) ],
+    ],
+    labels: ['Eliminatória','Quartas','Semifinal','Final'],
+  };
+}
+
+// ── GENERATE ──
+function generateBracket() {
+  const warn = document.getElementById('warningMsg');
+  if (players.length < 2) { warn.textContent = '⚠ Adicione pelo menos 2 jogadores.'; return; }
+  warn.textContent = '';
+  let pool = shuffle([...players]);
+  while (pool.length < bracketSize) pool.push(null); // null = BYE
+  if (pool.length > bracketSize) {
+    warn.textContent = `⚠ Usando os primeiros ${bracketSize} jogadores.`;
+    pool = pool.slice(0, bracketSize);
+  }
+  if      (bracketSize===8)  bracket = buildBracket8(pool);
+  else if (bracketSize===6)  bracket = buildBracket6(pool);
+  else if (bracketSize===10) bracket = buildBracket10(pool);
+
+  document.getElementById('bracketArea').style.display = 'block';
+  renderBracket();
+  document.getElementById('bracketArea').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// ── RESOLVE ──
+function resolveRef(ref) {
+  if (ref.type === 'slot') return bracket.slots[ref.idx]; // null = BYE
+  const m = bracket.rounds[ref.r][ref.m];
+  if (!m.winner) return null;
+  return resolveRef(m.winner === 'top' ? m.topRef : m.bottomRef);
+}
+
+function isResolved(ref) {
+  if (ref.type === 'slot') return true;
+  return bracket.rounds[ref.r][ref.m].winner !== null;
+}
+
+function canPlay(match) {
+  return isResolved(match.topRef) && isResolved(match.bottomRef);
+}
+
+// ── ADVANCE ──
+function advanceWinner(r, mi, side) {
+  const match = bracket.rounds[r][mi];
+  if (!canPlay(match)) return;
+  const top = resolveRef(match.topRef);
+  const bot = resolveRef(match.bottomRef);
+  if (!top && !bot) return;
+  if (!top) { match.winner='bottom'; renderBracket(); checkChamp(); return; }
+  if (!bot) { match.winner='top';    renderBracket(); checkChamp(); return; }
+
+  if (match.winner === side) {
+    // toggle off: clear this and all downstream
+    clearDownstream(r, mi);
+    match.winner = null;
+  } else {
+    clearDownstream(r, mi);
+    match.winner = side;
+  }
+  renderBracket();
+  checkChamp();
+}
+
+function clearDownstream(r, mi) {
+  bracket.rounds.forEach((round, rr) => {
+    if (rr <= r) return;
+    round.forEach((m, mm) => {
+      const feeds =
+        (m.topRef.type==='match'    && m.topRef.r===r    && m.topRef.m===mi) ||
+        (m.bottomRef.type==='match' && m.bottomRef.r===r && m.bottomRef.m===mi);
+      if (feeds && m.winner !== null) {
+        clearDownstream(rr, mm);
+        m.winner = null;
+      }
+    });
+  });
+}
+
+function resetWinners() {
+  if (!bracket) return;
+  bracket.rounds.forEach(round => round.forEach(m => m.winner=null));
+  renderBracket();
+  document.getElementById('winnerBanner').classList.remove('show');
+}
+
+function checkChamp() {
+  const last = bracket.rounds[bracket.rounds.length-1][0];
+  const name = last.winner ? resolveRef(last.winner==='top'?last.topRef:last.bottomRef) : null;
+  const banner = document.getElementById('winnerBanner');
+  if (name) {
+    document.getElementById('winnerName').textContent = name;
+    banner.classList.add('show');
+  } else {
+    banner.classList.remove('show');
+  }
+}
+
+// ── DRAG & DROP ──
+let dragSrcSlotIdx = null;
+let dragSrcEl = null;
+
+function startDrag(e, slotIdx, el) {
+  dragSrcSlotIdx = slotIdx;
+  dragSrcEl = el;
+  el.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+}
+function onDragOver(e, el) { e.preventDefault(); el.classList.add('drag-over'); }
+function onDragLeave(e, el) { el.classList.remove('drag-over'); }
+function onDrop(e, slotIdx, el) {
+  e.preventDefault(); el.classList.remove('drag-over');
+  if (dragSrcEl) dragSrcEl.classList.remove('dragging');
+  if (dragSrcSlotIdx===null || dragSrcSlotIdx===slotIdx) return;
+  const tmp = bracket.slots[dragSrcSlotIdx];
+  bracket.slots[dragSrcSlotIdx] = bracket.slots[slotIdx];
+  bracket.slots[slotIdx] = tmp;
+  dragSrcSlotIdx = null; dragSrcEl = null;
+  resetWinners(); // reset so winners are recomputed
+  renderBracket();
+}
+function onDragEnd(e, el) {
+  el.classList.remove('dragging');
+  document.querySelectorAll('.drag-over').forEach(x=>x.classList.remove('drag-over'));
+  dragSrcSlotIdx = null; dragSrcEl = null;
+}
+
+// ── RENDER ──
+const SW  = 150; // slot width
+const SH  = 36;  // slot height
+const CG  = 52;  // column gap (connector area)
+const LS  = 54;  // leaf spacing (vertical distance per leaf)
+const LBL = 22;  // label height at top
+const PAD = 8;   // padding top
+
+function renderBracket() {
+  const wrap = document.getElementById('bracketWrap');
+  wrap.innerHTML = '';
+
+  const rounds = bracket.rounds;
+  const numR = rounds.length;
+
+  // ── 1. Assign leaf row to every slot ref (DFS in-order) ──
+  let leafCount = 0;
+  const leafRows = {}; // slotIdx -> row number
+  function assignLeaves(ref) {
+    if (ref.type==='slot') {
+      if (!(ref.idx in leafRows)) leafRows[ref.idx] = leafCount++;
+      return;
+    }
+    const m = bracket.rounds[ref.r][ref.m];
+    assignLeaves(m.topRef);
+    assignLeaves(m.bottomRef);
+  }
+  const finalM = rounds[numR-1][0];
+  assignLeaves(finalM.topRef);
+  assignLeaves(finalM.bottomRef);
+
+  // ── 2. Center Y for any ref ──
+  function cy(ref) {
+    if (ref.type==='slot') return PAD + LBL + leafRows[ref.idx]*LS + LS/2;
+    const m = bracket.rounds[ref.r][ref.m];
+    return (cy(m.topRef) + cy(m.bottomRef)) / 2;
+  }
+
+  const totalH = PAD + LBL + leafCount*LS + SH;
+  const totalW = numR*(SW+CG) + SW + 80;
+
+  // ── 3. Container + SVG ──
+  const cont = document.createElement('div');
+  cont.style.cssText = `position:relative;width:${totalW}px;height:${totalH}px;`;
+  wrap.appendChild(cont);
+
+  const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+  svg.setAttribute('width', totalW);
+  svg.setAttribute('height', totalH);
+  svg.style.cssText = 'position:absolute;top:0;left:0;pointer-events:none;';
+  cont.appendChild(svg);
+
+  function line(x1,y1,x2,y2,color='#e0e0e0',width=2) {
+    const l = document.createElementNS('http://www.w3.org/2000/svg','line');
+    l.setAttribute('x1',x1); l.setAttribute('y1',y1);
+    l.setAttribute('x2',x2); l.setAttribute('y2',y2);
+    l.setAttribute('stroke',color); l.setAttribute('stroke-width',width);
+    l.setAttribute('stroke-linecap','round');
+    svg.appendChild(l);
+  }
+
+  const anyWinner = rounds.some(r=>r.some(m=>m.winner!==null));
+
+  // ── 4. Render each round ──
+  rounds.forEach((round, r) => {
+    const x = r*(SW+CG);
+
+    // Label
+    const lbl = document.createElement('div');
+    lbl.className = 'rlabel';
+    lbl.textContent = bracket.labels[r];
+    lbl.style.cssText = `left:${x}px;top:${PAD}px;width:${SW}px;`;
+    cont.appendChild(lbl);
+
+    round.forEach((match, mi) => {
+      const topCY  = cy(match.topRef);
+      const botCY  = cy(match.bottomRef);
+      const matchCY = (topCY + botCY) / 2;
+      const topName = resolveRef(match.topRef);
+      const botName = resolveRef(match.bottomRef);
+      const topBye  = topName===null && match.topRef.type==='slot';
+      const botBye  = botName===null && match.bottomRef.type==='slot';
+      const topPend = topName===null && !topBye;
+      const botPend = botName===null && !botBye;
+
+      // -- Top slot --
+      const topEl = makeSlot({
+        name: topBye ? 'BYE' : (topName || (topPend ? '— aguardando —' : '—')),
+        isBye: topBye, isPending: topPend,
+        isWinner: match.winner==='top',
+        isLoser:  match.winner==='bottom',
+        isDraggable: r===0 && !topBye && !anyWinner && match.topRef.type==='slot',
+        slotIdx: match.topRef.type==='slot' ? match.topRef.idx : -1,
+        canClick: !topBye && !topPend && topName && !match.winner && canPlay(match) && botName!==null,
+        isToggle: match.winner==='top',
+        onClick: () => advanceWinner(r, mi, 'top'),
+      });
+      topEl.style.left = x+'px';
+      topEl.style.top  = (topCY - SH/2)+'px';
+      cont.appendChild(topEl);
+
+      // -- Bottom slot --
+      const botEl = makeSlot({
+        name: botBye ? 'BYE' : (botName || (botPend ? '— aguardando —' : '—')),
+        isBye: botBye, isPending: botPend,
+        isWinner: match.winner==='bottom',
+        isLoser:  match.winner==='top',
+        isDraggable: r===0 && !botBye && !anyWinner && match.bottomRef.type==='slot',
+        slotIdx: match.bottomRef.type==='slot' ? match.bottomRef.idx : -1,
+        canClick: !botBye && !botPend && botName && !match.winner && canPlay(match) && topName!==null,
+        isToggle: match.winner==='bottom',
+        onClick: () => advanceWinner(r, mi, 'bottom'),
+      });
+      botEl.style.left = x+'px';
+      botEl.style.top  = (botCY - SH/2)+'px';
+      cont.appendChild(botEl);
+
+      // VS badge between slots if close enough
+      if (botCY - topCY < LS*1.5) {
+        const vs = document.createElement('div');
+        vs.className = 'vs-badge';
+        vs.textContent = 'VS';
+        vs.style.cssText = `left:${x+SW/2-8}px;top:${matchCY-7}px;`;
+        cont.appendChild(vs);
+      }
+
+      // SVG: vertical connector on right of this match
+      line(x+SW, topCY, x+SW, botCY);
+
+      // SVG: horizontal connector to next round
+      if (r < numR-1) {
+        const midX = x+SW + CG/2;
+        const nextX = (r+1)*(SW+CG);
+        // find where this match feeds into next round
+        const nextRound = rounds[r+1];
+        nextRound.forEach(nm => {
+          let feedSide = null;
+          if (nm.topRef.type==='match' && nm.topRef.r===r && nm.topRef.m===mi) feedSide='top';
+          if (nm.bottomRef.type==='match' && nm.bottomRef.r===r && nm.bottomRef.m===mi) feedSide='bot';
+          if (!feedSide) return;
+          const nmTopCY = cy(nm.topRef);
+          const nmBotCY = cy(nm.bottomRef);
+          const targetCY = feedSide==='top' ? nmTopCY : nmBotCY;
+          line(x+SW, matchCY, midX, matchCY);
+          line(midX, matchCY, midX, targetCY);
+          line(midX, targetCY, nextX, targetCY);
+        });
+
+        // If this match's ref is a direct slot ref in next round, also draw
+        // (handles cases where slot feeds directly into next round without being a match ref)
+        // Already handled above for match refs; slot refs in R1+ appear as slots, not as SVG connectors
+      }
+    });
+  });
+
+  // ── 5. Champion ──
+  const champX = numR*(SW+CG);
+  const champCY = cy({type:'match', r:numR-1, m:0});
+  const champ = resolveRef(
+    finalM.winner==='top' ? finalM.topRef :
+    finalM.winner==='bottom' ? finalM.bottomRef : {type:'slot',idx:-1}
+  );
+
+  // Line from final match to champion
+  const finalMatchCY = (cy(finalM.topRef)+cy(finalM.bottomRef))/2;
+  line((numR-1)*(SW+CG)+SW, finalMatchCY, champX, finalMatchCY, '#888', 2);
+
+  const clbl = document.createElement('div');
+  clbl.className = 'champ-label';
+  clbl.textContent = '🏆 Campeão';
+  clbl.style.cssText = `left:${champX}px;top:${PAD}px;width:170px;`;
+  cont.appendChild(clbl);
+
+  const cs = document.createElement('div');
+  cs.className = 'champ-slot' + (finalM.winner ? '' : ' empty');
+  cs.textContent = finalM.winner ? (champ||'—') : '— aguardando —';
+  cs.style.cssText = `left:${champX}px;top:${champCY-26}px;width:170px;`;
+  cont.appendChild(cs);
+}
+
+// ── REPESCAGEM ──
+let repescBracket = null;
+
+function getLosers() {
+  if (!bracket) return [];
+  const losers = [];
+  bracket.rounds[0].forEach(match => {
+    if (match.winner === null) return;
+    const loserRef = match.winner === 'top' ? match.bottomRef : match.topRef;
+    const name = resolveRef(loserRef);
+    if (name) losers.push(name);
+  });
+  return losers;
+}
+
+function buildRepescBracket(players) {
+  if (players.length === 2) {
+    return { slots: players, rounds: [[ mkMatch(slot(0), slot(1)) ]], labels: ['Final'] };
+  }
+  if (players.length <= 4) {
+    const s = [...players];
+    while (s.length < 4) s.push(null);
+    return {
+      slots: s,
+      rounds: [
+        [ mkMatch(slot(0),slot(1)), mkMatch(slot(2),slot(3)) ],
+        [ mkMatch(mref(0,0), mref(0,1)) ]
+      ],
+      labels: ['Semi','Final']
+    };
+  }
+  const s = [...players];
+  while (s.length < 8) s.push(null);
+  return buildBracket8(s.slice(0,8));
+}
+
+function startRepescagem() {
+  const losers = getLosers();
+  const msg = document.getElementById('repescagemMsg');
+  const area = document.getElementById('repescagemArea');
+  area.style.display = 'block';
+  if (losers.length < 2) {
+    msg.textContent = '⚠ Precisam de pelo menos 2 eliminados na 1ª rodada para a repescagem.';
+    document.getElementById('repescBracketWrap').innerHTML = '';
+    document.getElementById('repescagemWinnerBanner').classList.remove('show');
+    area.scrollIntoView({behavior:'smooth', block:'start'});
+    return;
+  }
+  msg.textContent = '';
+  repescBracket = buildRepescBracket(shuffle([...losers]));
+  renderRepescBracket();
+  area.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function resolveRepescRef(ref) {
+  if (ref.type === 'slot') return repescBracket.slots[ref.idx] ?? null;
+  const m = repescBracket.rounds[ref.r][ref.m];
+  if (!m.winner) return null;
+  return resolveRepescRef(m.winner === 'top' ? m.topRef : m.bottomRef);
+}
+
+function isRepescResolved(ref) {
+  if (ref.type === 'slot') return true;
+  return repescBracket.rounds[ref.r][ref.m].winner !== null;
+}
+
+function canRepescPlay(match) {
+  return isRepescResolved(match.topRef) && isRepescResolved(match.bottomRef);
+}
+
+function advanceRepescWinner(r, mi, side) {
+  const match = repescBracket.rounds[r][mi];
+  if (!canRepescPlay(match)) return;
+  const top = resolveRepescRef(match.topRef);
+  const bot = resolveRepescRef(match.bottomRef);
+  if (!top && !bot) return;
+  if (!top) { match.winner='bottom'; renderRepescBracket(); checkRepescChamp(); return; }
+  if (!bot)  { match.winner='top';   renderRepescBracket(); checkRepescChamp(); return; }
+  if (match.winner === side) {
+    clearRepescDownstream(r, mi);
+    match.winner = null;
+  } else {
+    clearRepescDownstream(r, mi);
+    match.winner = side;
+  }
+  renderRepescBracket();
+  checkRepescChamp();
+}
+
+function clearRepescDownstream(r, mi) {
+  repescBracket.rounds.forEach((round, rr) => {
+    if (rr <= r) return;
+    round.forEach((m, mm) => {
+      const feeds =
+        (m.topRef.type==='match'    && m.topRef.r===r    && m.topRef.m===mi) ||
+        (m.bottomRef.type==='match' && m.bottomRef.r===r && m.bottomRef.m===mi);
+      if (feeds && m.winner !== null) { clearRepescDownstream(rr, mm); m.winner = null; }
+    });
+  });
+}
+
+function checkRepescChamp() {
+  const last = repescBracket.rounds[repescBracket.rounds.length-1][0];
+  const name = last.winner ? resolveRepescRef(last.winner==='top' ? last.topRef : last.bottomRef) : null;
+  const banner = document.getElementById('repescagemWinnerBanner');
+  if (name) { document.getElementById('repescagemWinnerName').textContent = name; banner.classList.add('show'); }
+  else banner.classList.remove('show');
+}
+
+function resetRepescWinners() {
+  if (!repescBracket) return;
+  repescBracket.rounds.forEach(round => round.forEach(m => m.winner = null));
+  renderRepescBracket();
+  document.getElementById('repescagemWinnerBanner').classList.remove('show');
+}
+
+function renderRepescBracket() {
+  const wrap = document.getElementById('repescBracketWrap');
+  wrap.innerHTML = '';
+  const rounds = repescBracket.rounds;
+  const numR = rounds.length;
+
+  let leafCount = 0;
+  const leafRows = {};
+  function assignLeaves(ref) {
+    if (ref.type==='slot') { if (!(ref.idx in leafRows)) leafRows[ref.idx] = leafCount++; return; }
+    const m = repescBracket.rounds[ref.r][ref.m];
+    assignLeaves(m.topRef); assignLeaves(m.bottomRef);
+  }
+  const finalM = rounds[numR-1][0];
+  assignLeaves(finalM.topRef); assignLeaves(finalM.bottomRef);
+
+  function rcy(ref) {
+    if (ref.type==='slot') return PAD + LBL + leafRows[ref.idx]*LS + LS/2;
+    const m = repescBracket.rounds[ref.r][ref.m];
+    return (rcy(m.topRef) + rcy(m.bottomRef)) / 2;
+  }
+
+  const totalH = PAD + LBL + leafCount*LS + SH;
+  const totalW = numR*(SW+CG) + SW + 90;
+
+  const cont = document.createElement('div');
+  cont.style.cssText = `position:relative;width:${totalW}px;height:${totalH}px;`;
+  wrap.appendChild(cont);
+
+  const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+  svg.setAttribute('width', totalW); svg.setAttribute('height', totalH);
+  svg.style.cssText = 'position:absolute;top:0;left:0;pointer-events:none;';
+  cont.appendChild(svg);
+
+  function rline(x1,y1,x2,y2,color='#e0e0e0',width=2) {
+    const l = document.createElementNS('http://www.w3.org/2000/svg','line');
+    l.setAttribute('x1',x1); l.setAttribute('y1',y1); l.setAttribute('x2',x2); l.setAttribute('y2',y2);
+    l.setAttribute('stroke',color); l.setAttribute('stroke-width',width); l.setAttribute('stroke-linecap','round');
+    svg.appendChild(l);
+  }
+
+  rounds.forEach((round, r) => {
+    const x = r*(SW+CG);
+    const lbl = document.createElement('div');
+    lbl.className = 'rlabel';
+    lbl.textContent = repescBracket.labels[r];
+    lbl.style.cssText = `left:${x}px;top:${PAD}px;width:${SW}px;`;
+    cont.appendChild(lbl);
+
+    round.forEach((match, mi) => {
+      const topCY  = rcy(match.topRef);
+      const botCY  = rcy(match.bottomRef);
+      const matchCY = (topCY + botCY) / 2;
+      const topName = resolveRepescRef(match.topRef);
+      const botName = resolveRepescRef(match.bottomRef);
+      const topBye  = topName===null && match.topRef.type==='slot';
+      const botBye  = botName===null && match.bottomRef.type==='slot';
+      const topPend = topName===null && !topBye;
+      const botPend = botName===null && !botBye;
+
+      const topEl = makeSlot({
+        name: topBye ? 'BYE' : (topName || (topPend ? '— aguardando —' : '—')),
+        isBye: topBye, isPending: topPend,
+        isWinner: match.winner==='top', isLoser: match.winner==='bottom',
+        isDraggable: false, slotIdx: -1,
+        canClick: !topBye && !topPend && topName && !match.winner && canRepescPlay(match) && botName!==null,
+        isToggle: match.winner==='top',
+        onClick: () => advanceRepescWinner(r, mi, 'top'),
+      });
+      topEl.style.left = x+'px'; topEl.style.top = (topCY - SH/2)+'px';
+      cont.appendChild(topEl);
+
+      const botEl = makeSlot({
+        name: botBye ? 'BYE' : (botName || (botPend ? '— aguardando —' : '—')),
+        isBye: botBye, isPending: botPend,
+        isWinner: match.winner==='bottom', isLoser: match.winner==='top',
+        isDraggable: false, slotIdx: -1,
+        canClick: !botBye && !botPend && botName && !match.winner && canRepescPlay(match) && topName!==null,
+        isToggle: match.winner==='bottom',
+        onClick: () => advanceRepescWinner(r, mi, 'bottom'),
+      });
+      botEl.style.left = x+'px'; botEl.style.top = (botCY - SH/2)+'px';
+      cont.appendChild(botEl);
+
+      if (botCY - topCY < LS*1.5) {
+        const vs = document.createElement('div');
+        vs.className = 'vs-badge'; vs.textContent = 'VS';
+        vs.style.cssText = `left:${x+SW/2-8}px;top:${matchCY-7}px;`;
+        cont.appendChild(vs);
+      }
+
+      rline(x+SW, topCY, x+SW, botCY);
+
+      if (r < numR-1) {
+        const midX = x+SW + CG/2;
+        const nextX = (r+1)*(SW+CG);
+        rounds[r+1].forEach(nm => {
+          let feedSide = null;
+          if (nm.topRef.type==='match'    && nm.topRef.r===r    && nm.topRef.m===mi) feedSide='top';
+          if (nm.bottomRef.type==='match' && nm.bottomRef.r===r && nm.bottomRef.m===mi) feedSide='bot';
+          if (!feedSide) return;
+          const targetCY = feedSide==='top' ? rcy(nm.topRef) : rcy(nm.bottomRef);
+          rline(x+SW, matchCY, midX, matchCY);
+          rline(midX, matchCY, midX, targetCY);
+          rline(midX, targetCY, nextX, targetCY);
+        });
+      }
+    });
+  });
+
+  const champX = numR*(SW+CG);
+  const finalMatchCY = (rcy(finalM.topRef) + rcy(finalM.bottomRef)) / 2;
+  rline((numR-1)*(SW+CG)+SW, finalMatchCY, champX, finalMatchCY, '#888', 2);
+
+  const champ = finalM.winner ? resolveRepescRef(finalM.winner==='top' ? finalM.topRef : finalM.bottomRef) : null;
+
+  const clbl = document.createElement('div');
+  clbl.className = 'champ-label';
+  clbl.textContent = 'Campeão Repescagem';
+  clbl.style.cssText = `left:${champX}px;top:${PAD}px;width:180px;font-size:.6rem;`;
+  cont.appendChild(clbl);
+
+  const cs = document.createElement('div');
+  cs.className = 'champ-slot' + (finalM.winner ? '' : ' empty');
+  cs.textContent = finalM.winner ? (champ||'—') : '— aguardando —';
+  cs.style.cssText = `left:${champX}px;top:${finalMatchCY-26}px;width:170px;`;
+  cont.appendChild(cs);
+}
+
+function makeSlot({name,isBye,isPending,isWinner,isLoser,isDraggable,slotIdx,canClick,isToggle,onClick}) {
+  const el = document.createElement('div');
+  el.className = 'bslot';
+  el.textContent = name;
+  if (isBye)     el.classList.add('s-bye');
+  else if (isPending) el.classList.add('s-empty');
+  else if (isWinner)  el.classList.add('s-winner');
+  else if (isLoser)   el.classList.add('s-loser');
+
+  if (isDraggable && slotIdx >= 0) {
+    el.classList.add('drag-handle');
+    el.setAttribute('draggable','true');
+    el.addEventListener('dragstart', e => startDrag(e, slotIdx, el));
+    el.addEventListener('dragover',  e => onDragOver(e, el));
+    el.addEventListener('dragleave', e => onDragLeave(e, el));
+    el.addEventListener('drop',      e => onDrop(e, slotIdx, el));
+    el.addEventListener('dragend',   e => onDragEnd(e, el));
+  }
+
+  if (canClick || isToggle) {
+    el.classList.add('clickable');
+    el.title = isToggle ? 'Clique para remover vencedor' : `Avançar ${name}`;
+    el.addEventListener('click', onClick);
+  }
+  return el;
+}
+</script>
+</body>
+</html>
