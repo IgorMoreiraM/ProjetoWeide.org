@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(grep -v '^\\\\.$')",
-      "Bash(start:*)"
+      "Bash(start:*)",
+      "WebFetch(domain:pickerwheel.com)"
     ]
   }
 }

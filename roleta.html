@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Roleta — Weide.org</title>
+  <link rel="stylesheet" href="css/shared.css" />
+  <style>
+    .roleta-page { max-width:900px; margin:0 auto; padding:28px 16px 60px; }
+
+    .roleta-title { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3.4rem); font-weight:900; color:var(--preto); text-align:center; letter-spacing:-1px; margin-bottom:4px; }
+    .roleta-title span { color:var(--vermelho); }
+    .roleta-subtitle { text-align:center; color:#666; font-size:.9rem; margin-bottom:32px; }
+
+    .wheel-wrapper {
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:24px;
+    }
+
+    .wheel-container {
+      position:relative;
+      width:440px;
+      height:440px;
+      max-width:100%;
+    }
+
+    #wheelCanvas {
+      width:100%;
+      height:100%;
+      border-radius:50%;
+      display:block;
+      filter:drop-shadow(0 6px 24px rgba(0,0,0,.25));
+    }
+
+    .wheel-pointer {
+      position:absolute;
+      top:50%;
+      right:-18px;
+      transform:translateY(-50%);
+      width:0;
+      height:0;
+      border-top:18px solid transparent;
+      border-bottom:18px solid transparent;
+      border-right:36px solid var(--vermelho);
+      filter:drop-shadow(0 2px 4px rgba(0,0,0,.4));
+      z-index:10;
+    }
+
+    .wheel-center {
+      position:absolute;
+      top:50%;
+      left:50%;
+      transform:translate(-50%,-50%);
+      width:56px;
+      height:56px;
+      border-radius:50%;
+      background:var(--preto);
+      border:4px solid var(--amarelo);
+      cursor:pointer;
+      z-index:10;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:1.4rem;
+      transition:transform .1s, background .15s;
+      box-shadow:0 2px 10px rgba(0,0,0,.4);
+    }
+    .wheel-center:hover { background:#333; transform:translate(-50%,-50%) scale(1.08); }
+    .wheel-center:active { transform:translate(-50%,-50%) scale(.95); }
+
+    .spin-btn {
+      padding:14px 48px;
+      background:var(--vermelho);
+      color:#fff;
+      border:none;
+      border-radius:4px;
+      font-size:1.1rem;
+      font-weight:700;
+      font-family:inherit;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      cursor:pointer;
+      transition:background .15s, transform .1s;
+      box-shadow:0 3px 12px rgba(192,0,10,.35);
+    }
+    .spin-btn:hover { background:#a50009; }
+    .spin-btn:active { transform:scale(.97); }
+    .spin-btn:disabled { background:#ccc; color:#888; cursor:not-allowed; box-shadow:none; }
+
+    .result-box {
+      background:#fff;
+      border:3px solid var(--preto);
+      border-radius:4px;
+      padding:20px 32px;
+      text-align:center;
+      min-width:260px;
+      display:none;
+    }
+    .result-box.visible { display:block; }
+    .result-label { font-size:.72rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:#888; margin-bottom:6px; }
+    .result-name { font-family:'Playfair Display',serif; font-size:2rem; font-weight:900; color:var(--vermelho); line-height:1.1; }
+
+    /* entries panel */
+    .entries-panel {
+      width:100%;
+      background:#fff;
+      border:2px solid var(--preto);
+      border-radius:4px;
+      padding:20px 24px;
+      margin-top:16px;
+    }
+    .entries-panel h3 {
+      font-size:.78rem;
+      font-weight:700;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      color:#888;
+      margin-bottom:14px;
+      border-bottom:2px solid var(--amarelo);
+      padding-bottom:6px;
+    }
+
+    /* entry rows */
+    .entries-list { display:flex; flex-direction:column; gap:6px; }
+    .entry-row {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      background:var(--preto);
+      color:#fff;
+      border-radius:4px;
+      padding:7px 12px;
+    }
+    .chip-dot {
+      width:12px;
+      height:12px;
+      border-radius:50%;
+      flex-shrink:0;
+    }
+    .entry-name {
+      flex:1;
+      font-size:.88rem;
+      font-weight:600;
+      min-width:0;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+    .weight-label {
+      font-size:.7rem;
+      color:#aaa;
+      font-weight:600;
+      letter-spacing:.05em;
+      text-transform:uppercase;
+      flex-shrink:0;
+    }
+    .weight-ctrl {
+      display:flex;
+      align-items:center;
+      gap:3px;
+      flex-shrink:0;
+    }
+    .wbtn {
+      width:22px;
+      height:22px;
+      border:1px solid #555;
+      background:#333;
+      color:#fff;
+      border-radius:3px;
+      font-size:.95rem;
+      font-weight:700;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:0;
+      line-height:1;
+      transition:background .1s;
+      flex-shrink:0;
+    }
+    .wbtn:hover { background:#555; }
+    .weight-input {
+      width:38px;
+      text-align:center;
+      background:#222;
+      border:1px solid #555;
+      color:#fff;
+      border-radius:3px;
+      font-size:.82rem;
+      font-weight:700;
+      padding:2px 4px;
+      font-family:inherit;
+      outline:none;
+    }
+    .weight-input:focus { border-color:var(--amarelo); }
+    .weight-input::-webkit-inner-spin-button,
+    .weight-input::-webkit-outer-spin-button { -webkit-appearance:none; }
+    .weight-input[type=number] { -moz-appearance:textfield; }
+
+    .chip-pct {
+      font-size:.75rem;
+      font-weight:700;
+      color:var(--amarelo);
+      flex-shrink:0;
+      min-width:44px;
+      text-align:right;
+    }
+    .rm-btn {
+      background:none;
+      border:none;
+      color:#888;
+      cursor:pointer;
+      font-size:1.1rem;
+      padding:0 2px;
+      line-height:1;
+      flex-shrink:0;
+      transition:color .1s;
+    }
+    .rm-btn:hover { color:var(--vermelho); }
+
+    /* add row */
+    .add-row {
+      display:flex;
+      gap:8px;
+      margin-top:14px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .add-row input[type=text] {
+      flex:1;
+      min-width:140px;
+      padding:9px 14px;
+      border:2px solid #ddd;
+      border-radius:3px;
+      font-size:.95rem;
+      font-family:inherit;
+      outline:none;
+      transition:border-color .2s;
+    }
+    .add-row input[type=text]:focus { border-color:var(--vermelho); }
+    .peso-group {
+      display:flex;
+      align-items:center;
+      gap:6px;
+      flex-shrink:0;
+    }
+    .peso-group label {
+      font-size:.78rem;
+      font-weight:700;
+      color:#888;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+    }
+    .add-weight-input {
+      width:52px;
+      padding:9px 8px;
+      border:2px solid #ddd;
+      border-radius:3px;
+      font-size:.95rem;
+      font-family:inherit;
+      text-align:center;
+      outline:none;
+      transition:border-color .2s;
+    }
+    .add-weight-input:focus { border-color:var(--vermelho); }
+    .add-weight-input::-webkit-inner-spin-button,
+    .add-weight-input::-webkit-outer-spin-button { -webkit-appearance:none; }
+    .add-weight-input[type=number] { -moz-appearance:textfield; }
+
+    .btn { padding:9px 16px; border:none; border-radius:3px; font-size:.85rem; font-weight:700; font-family:inherit; cursor:pointer; transition:background .15s,transform .1s; letter-spacing:.05em; text-transform:uppercase; }
+    .btn:active { transform:scale(.97); }
+    .btn-red  { background:var(--vermelho); color:#fff; }
+    .btn-red:hover  { background:#a50009; }
+    .btn-dark { background:var(--preto); color:#fff; }
+    .btn-dark:hover { background:#333; }
+    .btn-yellow { background:var(--amarelo); color:var(--preto); }
+    .btn-yellow:hover { background:#d9af00; }
+
+    .import-row {
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-top:10px;
+      padding-top:10px;
+      border-top:2px dashed #ddd;
+      flex-wrap:wrap;
+    }
+    .import-label {
+      font-size:.72rem;
+      font-weight:700;
+      color:#aaa;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      flex-shrink:0;
+    }
+    #txtFileInput { display:none; }
+    .import-feedback {
+      font-size:.78rem;
+      color:#2e7d32;
+      font-weight:700;
+      display:none;
+    }
+    .import-feedback.error { color:var(--vermelho); }
+    .import-hint {
+      font-size:.7rem;
+      color:#bbb;
+      width:100%;
+      margin-top:2px;
+    }
+
+    @media(max-width:500px) {
+      .wheel-container { width:300px; height:300px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="ticker-wrap">
+  <span class="ticker-label">🎡 ROLETA</span>
+  <span class="ticker-content">
+    A ROLETA DECIDE &nbsp;|&nbsp; Gire e descubra quem foi escolhido &nbsp;|&nbsp; Nenhuma responsabilidade por resultados &nbsp;|&nbsp; A roleta nunca erra — só você erra &nbsp;|&nbsp;
+  </span>
+</div>
+
+<header>
+  <div class="header-top" style="max-width:1100px;margin:0 auto;">
+    <div>
+      <div class="site-title">WEIDE<span>.ORG</span></div>
+      <div class="site-subtitle">O portal de notícias mais preciso¹ do Brasil — ¹segundo Weide José</div>
+    </div>
+    <div class="badge-credibility">
+      <span class="pct">2%</span>
+      de credibilidade<br>e subindo²<br><small style="font-size:.6rem;color:#555">²não está subindo</small>
+    </div>
+  </div>
+  <nav>
+    <div style="max-width:1100px;margin:0 auto;display:flex;flex-wrap:wrap;">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="cartinhas.html" style="color:var(--amarelo);" class="nav-link">🃏 Cartinhas</a>
+      <a href="herois.html" style="color:var(--amarelo);" class="nav-link">⚔️ Heróis</a>
+      <a href="ranking-nerd.html" style="color:var(--amarelo);" class="nav-link">🏆 Ranking Nerd</a>
+      <a href="x1.html" style="color:var(--vermelho);font-weight:700;" class="nav-link">⚔ X1</a>
+      <a href="roleta.html" style="color:var(--vermelho);font-weight:700;" class="nav-link">🎡 Roleta</a>
+    </div>
+  </nav>
+</header>
+
+<div class="roleta-page">
+  <div class="roleta-title">🎡 <span>ROLETA</span> DA SORTE</div>
+  <div class="roleta-subtitle">Gire e deixe o destino decidir — porque você não consegue.</div>
+
+  <div class="wheel-wrapper">
+    <div class="wheel-container">
+      <canvas id="wheelCanvas" width="440" height="440"></canvas>
+      <div class="wheel-pointer"></div>
+      <button class="wheel-center" id="spinCenter" title="Girar">▶</button>
+    </div>
+
+    <button class="spin-btn" id="spinBtn">GIRAR</button>
+
+    <div class="result-box" id="resultBox">
+      <div class="result-label">Resultado</div>
+      <div class="result-name" id="resultName"></div>
+    </div>
+
+    <div class="entries-panel">
+      <h3>Entradas (<span id="entryCount">0</span>)</h3>
+      <div class="entries-list" id="entriesList"></div>
+      <div class="add-row">
+        <input type="text" id="newEntryInput" placeholder="Adicionar nome..." maxlength="40" />
+        <div class="peso-group">
+          <label for="newWeightInput">Peso</label>
+          <input type="number" id="newWeightInput" class="add-weight-input" value="1" min="1" max="999" />
+        </div>
+        <button class="btn btn-red" id="addBtn">Adicionar</button>
+        <button class="btn btn-dark" id="clearBtn">Limpar</button>
+      </div>
+      <div class="import-row">
+        <span class="import-label">📂 Importar lista</span>
+        <input type="file" id="txtFileInput" accept=".txt" />
+        <button class="btn btn-yellow" id="importBtn">Carregar .txt</button>
+        <span class="import-feedback" id="importFeedback"></span>
+        <span class="import-hint">Formato do arquivo: uma entrada por linha &nbsp;·&nbsp; <code>Nome - Peso</code> &nbsp;(ex: <code>Alice - 3</code>)</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <strong>WEIDE.ORG</strong> — O Portal da Verdade Alternativa™<br>
+  Fundado em 2026 por Weide José (Latão) · Todas as opiniões são fatos · Todos os fatos são opiniões<br>
+  <div class="disclaimer">
+    ⚠️ Este site é uma sátira. Nenhuma informação aqui publicada deve ser levada a sério,
+    assim como nenhuma informação dita por Weide José em qualquer contexto da vida real.
+    Qualquer dano causado pela leitura deste conteúdo é responsabilidade de quem acreditou.
+  </div>
+</footer>
+
+<script>
+const PALETTE = [
+  '#c0000a','#f5c400','#1565c0','#2e7d32','#6a1b9a',
+  '#e65100','#00838f','#ad1457','#37474f','#558b2f',
+  '#4527a0','#c62828','#f9a825','#0277bd','#4e342e',
+];
+
+// entries: [{name: string, weight: number}]
+let entries = [];
+let spinning = false;
+let currentAngle = 0;
+
+const AUDIOS = [
+  'Audios/AI TREM BAO MININO.mp3',
+  'Audios/Cururu AAAAI.ogg',
+  'Audios/Os brinquedos.mp3',
+  'Audios/ai garota.mp3',
+];
+function playRandomAudio() {
+  const src = AUDIOS[Math.floor(Math.random() * AUDIOS.length)];
+  const audio = new Audio(src);
+  audio.volume = 1;
+  audio.play().catch(() => {});
+}
+
+const canvas       = document.getElementById('wheelCanvas');
+const ctx          = canvas.getContext('2d');
+const spinBtn      = document.getElementById('spinBtn');
+const spinCenter   = document.getElementById('spinCenter');
+const resultBox    = document.getElementById('resultBox');
+const resultName   = document.getElementById('resultName');
+const entriesList  = document.getElementById('entriesList');
+const entryCount   = document.getElementById('entryCount');
+const newEntryInput  = document.getElementById('newEntryInput');
+const newWeightInput = document.getElementById('newWeightInput');
+
+function colorFor(i) { return PALETTE[i % PALETTE.length]; }
+
+function totalWeight() {
+  return entries.reduce((s, e) => s + e.weight, 0);
+}
+
+function pctFor(i) {
+  const total = totalWeight();
+  if (total === 0) return '0.0';
+  return (entries[i].weight / total * 100).toFixed(1);
+}
+
+function drawWheel() {
+  const W = canvas.width, CX = W/2, CY = W/2, R = W/2 - 4;
+  ctx.clearRect(0, 0, W, W);
+
+  if (entries.length === 0) {
+    ctx.beginPath();
+    ctx.arc(CX, CY, R, 0, Math.PI*2);
+    ctx.fillStyle = '#e0e0e0';
+    ctx.fill();
+    ctx.fillStyle = '#aaa';
+    ctx.font = 'bold 16px "Source Sans 3", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Adicione entradas abaixo', CX, CY);
+    return;
+  }
+
+  const total = totalWeight();
+  let cumAngle = currentAngle;
+
+  for (let i = 0; i < entries.length; i++) {
+    const sliceAngle = (entries[i].weight / total) * Math.PI * 2;
+    const start = cumAngle;
+    const end   = cumAngle + sliceAngle;
+
+    // slice fill
+    ctx.beginPath();
+    ctx.moveTo(CX, CY);
+    ctx.arc(CX, CY, R, start, end);
+    ctx.closePath();
+    ctx.fillStyle = colorFor(i);
+    ctx.fill();
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // text inside slice (only if slice is wide enough to be readable)
+    if (sliceAngle > 0.12) {
+      const midAngle  = start + sliceAngle / 2;
+      const nameSize  = Math.max(9, Math.min(14, R * 0.10));
+      const pctSize   = Math.max(8, Math.min(12, R * 0.082));
+      const showBoth  = sliceAngle > 0.22;
+      const maxLen    = showBoth ? 12 : 14;
+      const label     = entries[i].name.length > maxLen
+                          ? entries[i].name.slice(0, maxLen-1) + '…'
+                          : entries[i].name;
+      const pctText   = (entries[i].weight / total * 100).toFixed(1) + '%';
+
+      ctx.save();
+      ctx.translate(CX, CY);
+      ctx.rotate(midAngle);
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'middle';
+      ctx.shadowColor = 'rgba(0,0,0,.55)';
+      ctx.shadowBlur = 3;
+
+      if (showBoth) {
+        const gap = nameSize * 0.7;
+        ctx.fillStyle = '#fff';
+        ctx.font = `bold ${nameSize}px "Source Sans 3", sans-serif`;
+        ctx.fillText(label, R - 12, -gap / 2);
+
+        ctx.fillStyle = '#f5c400';
+        ctx.font = `bold ${pctSize}px "Source Sans 3", sans-serif`;
+        ctx.fillText(pctText, R - 12, gap / 2 + pctSize * 0.15);
+      } else {
+        ctx.fillStyle = '#fff';
+        ctx.font = `bold ${nameSize}px "Source Sans 3", sans-serif`;
+        ctx.fillText(label, R - 12, 0);
+      }
+
+      ctx.restore();
+    }
+
+    cumAngle += sliceAngle;
+  }
+
+  // center cap
+  ctx.beginPath();
+  ctx.arc(CX, CY, 28, 0, Math.PI*2);
+  ctx.fillStyle = '#111';
+  ctx.fill();
+  ctx.strokeStyle = '#f5c400';
+  ctx.lineWidth = 4;
+  ctx.stroke();
+}
+
+function getWinner() {
+  if (!entries.length) return null;
+  const total = totalWeight();
+  // pointer at angle 0; find which weighted slice contains it
+  const offset = ((-currentAngle) % (Math.PI*2) + Math.PI*2) % (Math.PI*2);
+  let cum = 0;
+  for (let i = 0; i < entries.length; i++) {
+    cum += (entries[i].weight / total) * Math.PI * 2;
+    if (offset < cum) return entries[i].name;
+  }
+  return entries[entries.length - 1].name;
+}
+
+function spin() {
+  if (spinning || entries.length < 2) return;
+  spinning = true;
+  spinBtn.disabled = true;
+  spinCenter.disabled = true;
+  resultBox.classList.remove('visible');
+
+  const extraSpins = 5 + Math.random() * 5;
+  const extraAngle = Math.random() * Math.PI * 2;
+  const totalDelta = extraSpins * Math.PI * 2 + extraAngle;
+  const duration   = 3500 + Math.random() * 1500;
+
+  const startAngle = currentAngle;
+  const startTime  = performance.now();
+
+  function easeOut(t) { return 1 - Math.pow(1 - t, 4); }
+
+  function frame(now) {
+    const elapsed = now - startTime;
+    const t = Math.min(elapsed / duration, 1);
+    currentAngle = startAngle + totalDelta * easeOut(t);
+    drawWheel();
+
+    if (t < 1) {
+      requestAnimationFrame(frame);
+    } else {
+      currentAngle = startAngle + totalDelta;
+      drawWheel();
+      spinning = false;
+      spinBtn.disabled = false;
+      spinCenter.disabled = false;
+      playRandomAudio();
+      const winner = getWinner();
+      if (winner) {
+        resultName.textContent = winner;
+        resultBox.classList.add('visible');
+      }
+    }
+  }
+
+  requestAnimationFrame(frame);
+}
+
+function setWeight(idx, val) {
+  const w = Math.max(1, Math.min(999, parseInt(val) || 1));
+  entries[idx].weight = w;
+  renderEntries();
+}
+
+function removeEntry(idx) {
+  entries.splice(idx, 1);
+  resultBox.classList.remove('visible');
+  renderEntries();
+}
+
+function renderEntries() {
+  entriesList.innerHTML = '';
+  entryCount.textContent = entries.length;
+
+  entries.forEach((entry, i) => {
+    const pct = pctFor(i);
+    const row = document.createElement('div');
+    row.className = 'entry-row';
+    row.innerHTML = `
+      <span class="chip-dot" style="background:${colorFor(i)}"></span>
+      <span class="entry-name">${entry.name}</span>
+      <span class="weight-label">Peso</span>
+      <div class="weight-ctrl">
+        <button class="wbtn" data-idx="${i}" data-delta="-1">−</button>
+        <input type="number" class="weight-input" value="${entry.weight}" min="1" max="999" data-idx="${i}" />
+        <button class="wbtn" data-idx="${i}" data-delta="1">+</button>
+      </div>
+      <span class="chip-pct">${pct}%</span>
+      <button class="rm-btn" data-idx="${i}" title="Remover">×</button>
+    `;
+    entriesList.appendChild(row);
+  });
+
+  // weight +/- buttons
+  entriesList.querySelectorAll('.wbtn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx   = parseInt(btn.dataset.idx);
+      const delta = parseInt(btn.dataset.delta);
+      setWeight(idx, entries[idx].weight + delta);
+    });
+  });
+
+  // weight direct input
+  entriesList.querySelectorAll('.weight-input').forEach(input => {
+    input.addEventListener('change', () => {
+      setWeight(parseInt(input.dataset.idx), input.value);
+    });
+    input.addEventListener('input', () => {
+      setWeight(parseInt(input.dataset.idx), input.value);
+    });
+  });
+
+  // remove buttons
+  entriesList.querySelectorAll('.rm-btn').forEach(btn => {
+    btn.addEventListener('click', () => removeEntry(parseInt(btn.dataset.idx)));
+  });
+
+  drawWheel();
+}
+
+function addEntry(name, weight) {
+  name = name.trim();
+  if (!name) return;
+  const w = Math.max(0.01, parseFloat(weight) || 1);
+  entries.push({ name, weight: w });
+  renderEntries();
+}
+
+function clearEntries() {
+  entries = [];
+  resultBox.classList.remove('visible');
+  renderEntries();
+}
+
+spinBtn.addEventListener('click', spin);
+spinCenter.addEventListener('click', spin);
+
+document.getElementById('addBtn').addEventListener('click', () => {
+  addEntry(newEntryInput.value, newWeightInput.value);
+  newEntryInput.value = '';
+  newWeightInput.value = '1';
+  newEntryInput.focus();
+});
+
+newEntryInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    addEntry(newEntryInput.value, newWeightInput.value);
+    newEntryInput.value = '';
+    newWeightInput.value = '1';
+  }
+});
+
+document.getElementById('clearBtn').addEventListener('click', clearEntries);
+
+// ── IMPORTAR .TXT ──
+const txtFileInput   = document.getElementById('txtFileInput');
+const importBtn      = document.getElementById('importBtn');
+const importFeedback = document.getElementById('importFeedback');
+
+importBtn.addEventListener('click', () => txtFileInput.click());
+
+txtFileInput.addEventListener('change', () => {
+  const file = txtFileInput.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = e => {
+    const lines = e.target.result.split(/\r?\n/);
+    let added = 0, skipped = 0;
+
+    lines.forEach(raw => {
+      const line = raw.trim();
+      if (!line) return;
+
+      const dashIdx = line.lastIndexOf('-');
+      if (dashIdx === -1) {
+        // sem separador: usa a linha inteira como nome, peso 1
+        addEntry(line, 1);
+        added++;
+        return;
+      }
+
+      const name   = line.slice(0, dashIdx).trim();
+      const rawW   = line.slice(dashIdx + 1).trim();
+      const weight = parseFloat(rawW);
+
+      if (!name) { skipped++; return; }
+
+      addEntry(name, isNaN(weight) || weight <= 0 ? 1 : weight);
+      added++;
+    });
+
+    importFeedback.textContent = added > 0
+      ? `✔ ${added} entrada${added > 1 ? 's' : ''} importada${added > 1 ? 's' : ''}${skipped ? ` (${skipped} ignorada${skipped > 1 ? 's' : ''})` : ''}`
+      : '⚠ Nenhuma entrada válida encontrada.';
+    importFeedback.className = 'import-feedback' + (added === 0 ? ' error' : '');
+    importFeedback.style.display = 'inline';
+
+    // reset input so the same file can be reloaded
+    txtFileInput.value = '';
+  };
+
+  reader.readAsText(file, 'UTF-8');
+});
+
+drawWheel();
+</script>
+</body>
+</html>
