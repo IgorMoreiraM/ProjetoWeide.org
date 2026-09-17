@@ -6,6 +6,7 @@
   <title>Cartinhas — Weide.org</title>
   <meta name="description" content="Coleção completa de cartinhas do universo Weide.org. Organizadas por classe, cada deck pertence a um personagem lendário do grupo." />
   <link rel="stylesheet" href="css/shared.css" />
+  <link rel="stylesheet" href="css/herois.css" />
 </head>
 <body>
 
@@ -47,7 +48,6 @@
     <a href="index.html">Economia</a>
     <a href="index.html">Opinião de Latão</a>
     <a href="cartinhas.html" class="ativo">🃏 Cartinhas</a>
-    <a href="herois.html">⚔️ Heróis</a>
     <a href="ranking-nerd.html">🏆 Ranking Nerd</a>
     <a href="x1.html" style="color:var(--vermelho);font-weight:700;">⚔ X1</a>
     <a href="roleta.html" style="color:var(--vermelho);font-weight:700;">🎡 Roleta</a>
@@ -116,8 +116,70 @@
 function renderClasse(cls) {
   const total = cls.cartas.length + cls.novaLeva.length;
 
-  let html = `
-    <div class="classe-section">
+  let heroiHtml = '';
+  if (cls.heroi) {
+    const h = cls.heroi;
+
+    let cartasGeradasHtml = '';
+    if (h.cartasGeradas && h.cartasGeradas.length > 0) {
+      cartasGeradasHtml += `
+        <div class="cartas-geradas-label"><span>🃏 Cartas Geradas pelo Poder — ${h.cartasGeradas.length}</span></div>
+        <div class="cartas-geradas-grid">
+      `;
+      h.cartasGeradas.forEach(c => {
+        const path = c.pasta + c.file;
+        cartasGeradasHtml += `
+          <div class="cartinha" onclick="openLightbox('${escAttr(path)}','${escAttr(c.nome)}')">
+            <div class="cartinha-img-wrap">
+              <img src="${escAttr(path)}" alt="${escAttr(c.nome)}" loading="lazy">
+            </div>
+            <div class="cartinha-nome">${c.nome}</div>
+          </div>
+        `;
+      });
+      cartasGeradasHtml += `</div>`;
+    }
+
+    heroiHtml = `
+      <div class="heroi-section">
+        <div class="heroi-classe-header" style="background:${cls.cor}">
+          <span class="classe-icon-big">${cls.icon}</span>
+          <div>
+            <h2>${cls.nome}</h2>
+            <div class="classe-personagem-label">${cls.personagem}</div>
+          </div>
+          <div class="classe-count-badge">${total} cartas</div>
+        </div>
+
+        <div class="heroi-content">
+          <!-- Coluna esquerda: imagem do personagem -->
+          <div class="heroi-col-personagem">
+            <div class="heroi-img-frame" onclick="openLightbox('${escAttr(h.img)}','${escAttr(cls.personagem)}')">
+              <img src="${escAttr(h.img)}" alt="${escAttr(cls.personagem)}" loading="lazy">
+            </div>
+            <div class="heroi-nome-tag">${cls.personagem}</div>
+          </div>
+
+          <!-- Coluna direita: poder heroico + cartas geradas -->
+          <div class="heroi-col-direita">
+            <div class="poder-heroico-bloco">
+              <div class="poder-label"><span>⚡ Poder Heroico</span></div>
+              <div class="poder-heroico-card" onclick="openLightbox('${escAttr(h.poderImg)}','${escAttr(h.poderNome)}')">
+                <div class="cartinha-img-wrap">
+                  <img src="${escAttr(h.poderImg)}" alt="${escAttr(h.poderNome)}" loading="lazy">
+                </div>
+                <div class="cartinha-nome">${h.poderNome}</div>
+              </div>
+            </div>
+            ${cartasGeradasHtml}
+          </div>
+        </div>
+
+        <hr class="heroi-divider">
+      </div>
+    `;
+  } else {
+    heroiHtml = `
       <div class="classe-header" style="background:${cls.cor}">
         <span class="classe-icon-big">${cls.icon}</span>
         <div>
@@ -126,6 +188,12 @@ function renderClasse(cls) {
         </div>
         <div class="classe-count-badge">${total} cartas</div>
       </div>
+    `;
+  }
+
+  let html = `
+    <div class="classe-section">
+      ${heroiHtml}
   `;
 
   if (cls.cartas.length > 0) {

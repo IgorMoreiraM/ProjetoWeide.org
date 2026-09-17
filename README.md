@@ -12,7 +12,6 @@ Weide.org é um **site de sátira e humor** criado como projeto pessoal entre am
 |---|---|
 | `index.html` | Página principal com notícias falsas, mapa-múndi "corrigido", reviews de jogos, empregos recusados e frases históricas |
 | `cartinhas.html` | Sistema de cartinhas colecionáveis dos personagens do grupo |
-| `herois.html` | Galeria de heróis com stats e habilidades fictícias |
 | `ranking-nerd.html` | Ranking de nerdice dos integrantes do grupo com pontuações e categorias |
 | `roleta.html` | Roleta interativa com canvas, sistema de pesos e importação via `.txt` |
 | `x1.html` | Sistema de duelo 1v1 entre membros do grupo |
