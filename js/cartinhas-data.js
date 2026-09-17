@@ -73,7 +73,7 @@ const CLASSES = [
       '6 Perdidos na selva.png','6 Preparação do acampamento.png','6_Henrique_faminto.png',
       '8 Weide kench.png','9 Ryan Provocante.png','10 Patrick no bain.png'
     ],
-    novaLeva: ['Mela-de-Roupão(16-1-2026-16_8).png']
+    novaLeva: ['0_Bilauzin.png', '0_Coco-Esburacado.png','1_Action-Finha token.png', '1_Aurélio-Figure Token.png', '1_Caixa-de-Ferramenta.png', '1_Rei-Delas.png', '1_Tirada-Analfabetica.png', '2_Pack-do-Péulin.png', '2_Semente-de-Melancia.png', '3_Cacareco-de-Lojinha.png', '3_Caixas-de-Action-Figure.png', '3_Churrasco-Gratidão.png', '3_Patada.png', '3_Rodada-de-Praya.png', '4_Camisa-do-Virgini-Jr.png', '4_Cuei-Calouro.png', '4_Ministro-Messi-de-Morais.png', '5_Lanche-ou-Cigas.png', '5_Perdidos-na-Selva.png', '6_Farmando-Aura.png', '6_Kururu-Latifundiário.png', '7_Barony-Barba--Azul.png', '7_Geraldo-Barba--Branca.png', '8_Cheiro-de-Homem-Alfa.png', '8_T_challa.png', '8_Wedson.png', '10_Mela-de-Roupão.png']
   },
   {
     id: 'guerreiro', nome: 'Guerreiro', personagem: 'Weide', icon: '⚔️', cor: '#c0000a',
@@ -124,7 +124,7 @@ const CLASSES = [
       '7 Voz de assalto.png','7 weide tendencioso.png','8 Zé Coronga.png'
     ],
     novaLeva: [
-      '1_Passamos_na_UFG.png','4_Lemuel_Safadinho.png','4_Vai_Thiomanocu.png','6_O-Gritinha.png'
+      '0_Desconectado.png', '0_Pedindo-com-jeitinho.png', '0_Skiny-Matinal.png', '1_Ameaça-Analfabética.png', '1_Cade-o-tchola.png', '1_Juliet-de-cria.png', '1_Mola TOKEN.png', '1_Passamos_na_UFG.png', '1_Ping-Sinistro.png', '2_Agora-é-homem-com-homem.png', '2_Cicatriz-de-Facada.png', '2_Enrrabado.png', '2_Ladrão-do-Joaquim.png', '2_Mela-na-night.png', '2_Moggada-brutal.png', '2_Rafinha-tramando-algo.png', '2_Traição.png', '4_Lemuel_Safadinho.png', '4_Vai_Thiomanocu.png', '6_O-Gritinha.png'
     ]
   },
   {
@@ -206,13 +206,7 @@ const CLASSES = [
       '8_Old_school_boys.png','8_Thalyne_Alada.png','9_Controlar_o_tchola.png'
     ],
     novaLeva: [
-      '1_Deve-ser-tão-bunitin.png','1_Messias-Farmando-Aura.png','1_Passa-pasta-que-sa.png',
-      '1_Rafinha-Anjo.png','1_Tou-de-Boas.png','2_Conforto-Mortal.png',
-      '2_Corte-do-Pica-pau.png','2_Deformidade.png','2_Lugar-Errado.png',
-      '2_Mudando-o-Mindset.png','2_Poder Heroico Corte do Pica Pau.png','2_To-de-Atestado.png',
-      '2_Weide-Papai.png','3_Oração-dos-Felinha.png','3_Weide-Obscuro.png',
-      '4_Cururu-Emo.png','4_Ladrilho-Nazista.png','4_Massagem-Gratuita.png',
-      '7_O-filho-do-Messias.png'
+      '1_Deve-ser-tão-bunitin.png', '1_Messias-Farmando-Aura.png', '1_Passa-pasta-que-sa.png', '1_Rafinha-Anjo.png', '1_Tou-de-Boas.png', '2_Conforto-Mortal.png', '2_Corte-do-Pica-pau.png', '2_Deformidade.png', '2_Lugar-Errado.png', '2_Mudando-o-Mindset.png', '2_Poder Heroico Corte do Pica Pau.png', '2_To-de-Atestado.png', '2_Weide-Papai.png', '3_Oração-dos-Felinha.png', '3_Weide-Obscuro.png', '4_Cururu-Emo.png', '4_Ladrilho-Nazista.png', '4_Massagem-Gratuita.png', '4_Silêncio-Gamer.png', '5_Dr.-Souza.png', '7_O-filho-do-Messias.png'
     ]
   },
   {
